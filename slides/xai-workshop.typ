@@ -103,7 +103,7 @@
   #callout-strip(
     "Fil rouge",
     [
-      Des *données réelles d'enquête (`ANES 2024`, `N = 4 734` répondant·es)* : prédire le *revenu annuel du foyer* (`annual_income`, `$ / an`), visualiser les résidus sur *`100` points cliquables* (`seed = 5`), et auditer l'effet de `female` et `minority`.
+      *Étudier est-il vraiment utile ?* À partir de données réelles d'enquête (`4 734` foyers), mesurer l'effet d'une année d'études supplémentaire sur le revenu annuel, puis comparer différents modèles jusqu'à l'IA explicable.
     ],
     accent: accent-red,
   )
@@ -617,7 +617,7 @@
     #text(size: 14pt, weight: "bold", fill: ink)[1. Courbe non linéaire de l'âge]
     #v(5pt)
     #set text(size: 11.4pt)
-    Sur `ANES 2024`, l'OLS résume mal la hausse de carrière puis la baisse à la retraite avec une pente plate (`-227 $ / an`). Le MLP capte cette bosse courbe et fait monter `R²` de `0.31` à `0.34`.
+    Sur nos données réelles, l'OLS résume mal la hausse de carrière puis la baisse à la retraite avec une pente plate (`-227 $ / an`). Le MLP capte cette bosse courbe et fait monter `R²` de `0.31` à `0.34`.
 
     #v(12pt)
     #line(length: 100%, stroke: 0.6pt + border-col)
@@ -799,7 +799,7 @@
     #v(8pt)
     #set text(size: 11.2pt)
     - Depuis l'#strong[Onglet 5] (`Hack-time`), ouvrez le #link("https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb")[#text(weight: "bold", fill: accent-red)[notebook Google Colab]] (dépôt #link("https://github.com/mickaeltemporao/workshop-xai")[GitHub]).
-    - Chargez `ANES 2024` et retrouvez `R² = 0.31`, `female` (`-8 007 $`) et `minority` (`-10 328 $`).
+    - Chargez les données d'enquête et retrouvez `R² = 0.31`, `female` (`-8 007 $`) et `minority` (`-10 328 $`).
   ][
     #line(length: 100%, stroke: 1.5pt + accent-red)
     #v(8pt)
