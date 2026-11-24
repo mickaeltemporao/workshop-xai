@@ -560,7 +560,7 @@
       )
       #v(8pt)
       #text(font: font-heading, size: 14.5pt, weight: "bold", fill: iep-anthracite)[
-        Un paramètre
+        Une droite
       ]
       #v(8pt)
       #set text(size: 11.2pt)
@@ -579,7 +579,7 @@
       )
       #v(8pt)
       #text(font: font-heading, size: 14.5pt, weight: "bold", fill: iep-anthracite)[
-        Quelques paramètres
+        Des paramètres
       ]
       #v(8pt)
       #set text(size: 11.2pt)
@@ -598,7 +598,7 @@
       )
       #v(8pt)
       #text(font: font-heading, size: 14.5pt, weight: "bold", fill: iep-anthracite)[
-        Le Deep Learning
+        Deep Learning
       ]
       #v(8pt)
       #set text(size: 11.2pt)
@@ -924,7 +924,7 @@
       ]
       #v(8pt)
       #set text(size: 11pt)
-      - Sur l'#strong[Onglet 2] (`Un paramètre`, `100` points réels `ANES 2024`), cochez #emph[Afficher les erreurs], puis ajoutez un point extrême au clic.
+      - Sur l'#strong[Onglet 2] (`Une droite`, `100` points réels `ANES 2024`), cochez #emph[Afficher les erreurs], puis ajoutez un point extrême au clic.
       - Testez `femme` et `minorite` sur les #strong[Onglets 3 et 4] (`7` vs `329` paramètres).
     ],
     [
