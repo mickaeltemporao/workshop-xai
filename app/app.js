@@ -1839,7 +1839,11 @@
       fmtSignedIncome(olsParams.minorite, 0) +
       " en OLS). Même si l'on retire ces deux critères (sexe et origine) d'un algorithme RH ou bancaire, " +
       "une boîte noire peut les reconstruire via des variables corrélées " +
-      "(statut d'activité, situation maritale, niveau d'études, âge). D'où l'exigence d'audit posée par l'<strong>AI Act européen</strong>.";
+      "(statut d'activité, situation maritale, niveau d'études, âge). " +
+      "C'est ce qu'a illustré le cas célèbre de <strong>COMPAS</strong> (justice américaine) : même sans variable d'origine, " +
+      "l'algorithme classait presque deux fois plus souvent à tort des prévenus noirs « à haut risque » via des variables proxy " +
+      "(quartier, environnement). Sans accès aux poids réels des paramètres, un biais reste difficile à prouver et à corriger : " +
+      "d'où l'exigence d'audit et de transparence posée par l'<strong>AI Act européen</strong>.";
   }
 
   function updateTab3() {
