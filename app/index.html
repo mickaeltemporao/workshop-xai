@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Le Laboratoire du Revenu · Atelier IA Explicable</title>
+  <title>Workshop IA Explicable (XAI)</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,15 +13,11 @@
         <div class="brand-block">
           <div class="brand-mark" aria-hidden="true">XAI</div>
           <div>
-            <h1 class="site-title">Le Laboratoire du Revenu · Atelier IA Explicable</h1>
+            <h1 class="site-title">Workshop IA Explicable (XAI)</h1>
             <p class="site-subtitle">
               De la droite de régression aux réseaux de neurones : comprendre la transparence, la précision et les biais d'un modèle
             </p>
           </div>
-        </div>
-        <div class="header-meta">
-          <span id="param-badge" class="param-badge" aria-live="polite">IA Explicable (XAI)</span>
-          <span id="data-note" class="data-note">Données réelles ANES 2024 (USA) · N = 4 734</span>
         </div>
       </div>
 
@@ -36,7 +32,7 @@
           type="button"
         >
           <span class="tab-num">1</span>
-          <span class="tab-label">Accueil</span>
+          <span class="tab-label">Introduction</span>
         </button>
         <button
           id="tab-btn-2"
@@ -48,7 +44,7 @@
           type="button"
         >
           <span class="tab-num">2</span>
-          <span class="tab-label">1 paramètre</span>
+          <span class="tab-label">Un paramètre</span>
         </button>
         <button
           id="tab-btn-3"
@@ -72,7 +68,7 @@
           type="button"
         >
           <span class="tab-num">4</span>
-          <span class="tab-label">Deep learning</span>
+          <span class="tab-label">Le Deep Learning</span>
         </button>
         <button
           id="tab-btn-5"
@@ -84,7 +80,7 @@
           type="button"
         >
           <span class="tab-num">5</span>
-          <span class="tab-label">Notebook Colab</span>
+          <span class="tab-label">Hack-time</span>
         </button>
       </nav>
     </header>
@@ -97,38 +93,31 @@
         aria-labelledby="tab-btn-1"
       >
         <div class="landing-stack">
-          <div class="card landing-hero">
-            <div class="landing-hero-text">
-              <span class="eyebrow">Atelier · IA Explicable (XAI)</span>
-              <h2 class="landing-title">Comprendre comment un modèle décide</h2>
-              <p class="landing-lead">
-                Partez d'une droite très simple sur de vraies données d'enquête (<strong>ANES 2024, N = 4 734</strong>)
-                pour prédire le revenu annuel du foyer, puis observez ce qui change lorsque le modèle gagne en complexité et perd en transparence.
-              </p>
-            </div>
-            <div class="landing-hero-action">
-              <button class="btn btn-primary" type="button" data-go-tab="2">
-                Commencer : 1 paramètre →
-              </button>
-            </div>
-          </div>
+          <blockquote class="card quote-hero">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <p class="quote-hero-text">
+              Tous les modèles sont faux, mais certains sont utiles.
+            </p>
+            <footer class="quote-hero-author">
+              George E. P. Box (1976)
+            </footer>
+          </blockquote>
 
           <div class="landing-grid-3">
             <article class="card concept-card">
               <span class="concept-num">01 · Modèle</span>
-              <h3 class="concept-title">Une heuristique (simplification)</h3>
+              <h2 class="concept-title">Une heuristique (simplification)</h2>
               <p class="concept-body">
                 Un modèle ne copie pas tout le réel : il simplifie volontairement le monde pour s'orienter, exactement comme un plan du tram face à une photo satellite.
               </p>
-              <blockquote class="concept-quote">
-                « Tous les modèles sont faux, mais certains sont utiles. »
-                <cite>George E. P. Box (1976)</cite>
-              </blockquote>
+              <p class="concept-body">
+                Ce que l'on retire rend la représentation lisible ; ce que l'on garde dépend de la question posée.
+              </p>
             </article>
 
             <article class="card concept-card">
               <span class="concept-num">02 · Algorithme</span>
-              <h3 class="concept-title">Une recette</h3>
+              <h2 class="concept-title">Une recette</h2>
               <p class="concept-body">
                 Un algorithme est une suite finie d'étapes qui transforme des données d'entrée en résultat.
               </p>
@@ -139,7 +128,7 @@
 
             <article class="card concept-card">
               <span class="concept-num">03 · IA Explicable (XAI)</span>
-              <h3 class="concept-title">Ouvrir la boîte</h3>
+              <h2 class="concept-title">Ouvrir la boîte</h2>
               <p class="concept-body">
                 À <code>2</code> ou <code>7</code> paramètres (<strong>boîte de verre</strong>), chaque règle est directement lisible et permet d'auditer les biais (<code>femme</code>, <code>minorite</code>).
               </p>
@@ -149,28 +138,18 @@
             </article>
           </div>
 
-          <div class="card">
-            <span class="block-label">Accès direct aux étapes de l'atelier</span>
-            <div class="pathway-grid">
-              <button class="pathway-btn" type="button" data-go-tab="2">
-                <span class="pathway-step">Onglet 2</span>
-                <strong>1 paramètre</strong>
-                <span>Tracer la droite sur 50 à 300 points réels</span>
-              </button>
-              <button class="pathway-btn" type="button" data-go-tab="3">
-                <span class="pathway-step">Onglet 3</span>
-                <strong>Quelques paramètres</strong>
-                <span>6 leviers et double audit de biais</span>
-              </button>
-              <button class="pathway-btn" type="button" data-go-tab="4">
-                <span class="pathway-step">Onglet 4</span>
-                <strong>Deep learning</strong>
-                <span>Réseau à 329 paramètres et sonde XAI</span>
-              </button>
-              <button class="pathway-btn" type="button" data-go-tab="5">
-                <span class="pathway-step">Onglet 5</span>
-                <strong>Notebook Colab</strong>
-                <span>Ouvrir le code Python sans installation</span>
+          <div class="card landing-cta-card">
+            <div class="landing-cta-text">
+              <span class="eyebrow">Atelier · IA Explicable (XAI)</span>
+              <h2 class="landing-cta-title">Comprendre comment un modèle décide</h2>
+              <p class="landing-lead">
+                Partez d'une droite très simple sur de vraies données d'enquête (<strong>ANES 2024, N = 4 734</strong>) pour prédire le revenu annuel du foyer,
+                puis observez ce qui change lorsque le modèle gagne en complexité et perd en transparence.
+              </p>
+            </div>
+            <div class="landing-cta-action">
+              <button class="btn btn-primary btn-lg" type="button" data-go-tab="2">
+                Commencer →
               </button>
             </div>
           </div>
@@ -188,10 +167,10 @@
           <div class="card scatter-card">
             <div class="card-header">
               <div>
-                <h2 class="card-title">Un seul levier : revenu_annuel ~ etudes (points réels ANES 2024)</h2>
+                <h2 class="card-title">Un seul levier : revenu_annuel ~ etudes (100 points réels ANES 2024)</h2>
                 <p class="card-desc">
-                  Chaque point bleu représente un foyer réel de l'enquête ANES 2024 (léger jitter visuel pour éviter les chevauchements).
-                  Placez la droite au plus près du nuage, ajoutez des points au clic ou affichez +250 points réels.
+                  Chaque point bleu représente un foyer réel de l'enquête ANES 2024 (100 profils tirés parmi 4 734, avec léger jitter visuel).
+                  Placez la droite au plus près du nuage, ou ajoutez des points en cliquant dans le graphique.
                 </p>
               </div>
               <div class="scatter-toggles">
@@ -207,9 +186,9 @@
             </div>
 
             <div class="scatter-status-strip">
-              <span id="scatter-count-badge" class="badge badge-indigo">50 points réels</span>
+              <span id="scatter-count-badge" class="badge badge-indigo">100 points réels</span>
               <span class="scatter-prompt">
-                Cliquez dans le graphique pour ajouter un profil ou utilisez « + 250 points réels » pour voir l'effet d'un échantillon plus large.
+                Cliquez dans le graphique pour ajouter un profil (ex. un cas extrême) et observer l'effet sur la droite.
               </span>
             </div>
 
@@ -265,10 +244,7 @@
                 </button>
               </div>
               <div class="btn-row-tab1-sub">
-                <button id="btn-toggle-250" class="btn btn-secondary btn-sm" type="button">
-                  + 250 points réels (ANES)
-                </button>
-                <button id="btn-clear-points" class="btn btn-ghost btn-sm" type="button" disabled>
+                <button id="btn-clear-points" class="btn btn-ghost btn-sm btn-block" type="button" disabled>
                   Effacer les points ajoutés
                 </button>
               </div>
@@ -278,12 +254,12 @@
               <h3 class="card-subtitle">Compteur d'erreur moyenne (RMSE : écart typique)</h3>
               <div class="meter-numbers">
                 <div>
-                  <span id="tab1-rmse-user-label" class="metric-label">Votre erreur (50 pts)</span>
-                  <strong id="tab1-rmse-user" class="metric-big">70 273 $ / an</strong>
+                  <span id="tab1-rmse-user-label" class="metric-label">Votre erreur (100 pts)</span>
+                  <strong id="tab1-rmse-user" class="metric-big">72 900 $ / an</strong>
                 </div>
                 <div class="metric-right">
-                  <span id="tab1-rmse-ols-label" class="metric-label">Optimum OLS (50 pts)</span>
-                  <strong id="tab1-rmse-ols" class="metric-ref">63 718 $ / an</strong>
+                  <span id="tab1-rmse-ols-label" class="metric-label">Optimum OLS (100 pts)</span>
+                  <strong id="tab1-rmse-ols" class="metric-ref">70 237 $ / an</strong>
                 </div>
               </div>
 
@@ -299,8 +275,8 @@
 
               <div id="tab1-ols-reveal" class="ols-reveal" hidden>
                 <div class="ols-reveal-badges">
-                  <span id="tab1-badge-r2" class="badge badge-indigo">R² = 0,35 (35,2 % expliqué)</span>
-                  <span id="tab1-badge-rmse" class="badge badge-teal">RMSE optimal = 63 718 $ / an</span>
+                  <span id="tab1-badge-r2" class="badge badge-indigo">R² = 0,22 (22,4 % expliqué)</span>
+                  <span id="tab1-badge-rmse" class="badge badge-teal">RMSE optimal = 70 237 $ / an</span>
                 </div>
                 <p id="tab1-ols-interpretation" class="ols-interpretation"></p>
                 <div class="code-snippet">
@@ -580,7 +556,7 @@
       >
         <div class="colab-stack">
           <div class="card colab-hero">
-            <span class="eyebrow">Atelier pratique · Google Colab (aucune installation)</span>
+            <span class="eyebrow">Hack-time · Google Colab (aucune installation)</span>
             <h2 class="landing-title">Ouvrir le notebook Python dans Google Colab</h2>
             <p class="landing-lead">
               Ce notebook guidé sans prérequis charge directement les vraies données <strong>ANES 2024 (N = 4 734)</strong>,
@@ -630,9 +606,9 @@
 
             <article class="card colab-step-card">
               <span class="concept-num">Étape 3</span>
-              <h3 class="concept-title">Relever les 2 défis Hack-Time</h3>
+              <h3 class="concept-title">Relever les 2 défis Hack-time</h3>
               <p class="concept-body">
-                Testez l'audit de biais (<code>femme</code>, <code>minorite</code>) avec les curseurs du formulaire, puis comparez l'effet de l'âge avec l'Onglet 4 (Deep learning).
+                Testez l'audit de biais (<code>femme</code>, <code>minorite</code>) avec les curseurs du formulaire, puis comparez l'effet de l'âge avec l'Onglet 4 (Le Deep Learning).
               </p>
             </article>
           </div>
@@ -642,11 +618,16 @@
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <p class="ai-disclaimer">
-          <strong>Note sur l'usage de l'IA :</strong> certaines parties de cet atelier (code de l'application, notebook et supports)
-          ont été conçues avec l'assistance d'outils d'IA générative. L'ensemble des contenus, analyses statistiques
-          (<code>ANES 2024</code>) et choix pédagogiques a été vérifié et validé sous la responsabilité de l'intervenant.
-        </p>
+        <span class="license-note">
+          Contenu pédagogique diffusé sous licence
+          <a
+            class="footer-link"
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr"
+            target="_blank"
+            rel="noopener noreferrer"
+          >CC BY-NC-SA 4.0</a>
+          · Données réelles ANES 2024
+        </span>
         <a
           class="footer-link"
           href="https://github.com/mickaeltemporao/workshop-xai"

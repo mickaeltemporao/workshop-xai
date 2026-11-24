@@ -74,7 +74,6 @@
     activeTab: "1",
     b0: TAB1_DEFAULT_B0,
     b1: TAB1_DEFAULT_B1,
-    includeExtra250: false,
     addedPoints: [],
     showResiduals: false,
     autoOls: false,
@@ -122,7 +121,6 @@
     el.tab1EqLive = document.getElementById("tab1-eq-live");
     el.btnFindOls = document.getElementById("btn-find-ols");
     el.btnResetTab1 = document.getElementById("btn-reset-tab1");
-    el.btnToggle250 = document.getElementById("btn-toggle-250");
     el.btnClearPoints = document.getElementById("btn-clear-points");
     el.tab1RmseUserLabel = document.getElementById("tab1-rmse-user-label");
     el.tab1RmseOlsLabel = document.getElementById("tab1-rmse-ols-label");
@@ -233,21 +231,23 @@
       panel.classList.toggle("is-active", isCurrent);
     });
 
-    if (tabId === "1") {
-      el.paramBadge.textContent = "IA Explicable (XAI)";
-    } else if (tabId === "2") {
-      el.paramBadge.textContent = "2 paramètres";
-    } else if (tabId === "3") {
-      el.paramBadge.textContent = "7 paramètres";
-    } else if (tabId === "4") {
-      el.paramBadge.textContent = "7 vs 329 paramètres";
-    } else {
-      el.paramBadge.textContent = "Atelier Python · Colab";
+    if (el.paramBadge) {
+      if (tabId === "1") {
+        el.paramBadge.textContent = "Introduction";
+      } else if (tabId === "2") {
+        el.paramBadge.textContent = "2 paramètres";
+      } else if (tabId === "3") {
+        el.paramBadge.textContent = "7 paramètres";
+      } else if (tabId === "4") {
+        el.paramBadge.textContent = "7 vs 329 paramètres";
+      } else {
+        el.paramBadge.textContent = "Hack-time · Colab";
+      }
     }
   }
 
   /* =========================================================
-     ONGLET 1 : REGRESSION SIMPLE (revenu_annuel ~ etudes)
+     ONGLET 2 : REGRESSION SIMPLE (revenu_annuel ~ etudes)
      ========================================================= */
   var scatterGeom = {
     w: 720,
@@ -256,7 +256,7 @@
     padR: 22,
     padT: 20,
     padB: 48,
-    xMin: 7,
+    xMin: 0,
     xMax: 21,
     yMin: 0,
     yMax: 290000
@@ -299,11 +299,7 @@
   }
 
   function getActivePoints() {
-    var pts = state.data.scatter_sample;
-    if (state.includeExtra250 && Array.isArray(state.data.scatter_extra_250)) {
-      pts = pts.concat(state.data.scatter_extra_250);
-    }
-    return pts.concat(state.addedPoints);
+    return state.data.scatter_sample.concat(state.addedPoints);
   }
 
   function computeActiveOls(points) {
@@ -364,7 +360,6 @@
 
   function renderScatterPoints() {
     var activePoints = getActivePoints();
-    var denseMode = activePoints.length > 100;
     el.pointsLayer.innerHTML = "";
     el.residualsLayer.innerHTML = "";
     el.residualNodes = [];
@@ -373,11 +368,11 @@
       var isCustom = Boolean(pt.custom);
       var pxVal = getPointPlotX(pt);
       var pyVal = getPointPlotY(pt);
-      var baseR = isCustom ? 5.8 : (denseMode ? 3.4 : 4.6);
+      var baseR = isCustom ? 5.6 : 4.0;
       var baseFill = isCustom ? "#f7941e" : "#0072bc";
-      var baseOpacity = isCustom ? 0.96 : (denseMode ? 0.56 : 0.78);
+      var baseOpacity = isCustom ? 0.96 : 0.72;
       var baseStroke = isCustom ? "#1e2124" : "#ffffff";
-      var baseStrokeW = isCustom ? 1.6 : (denseMode ? 0.65 : 0.9);
+      var baseStrokeW = isCustom ? 1.6 : 0.85;
 
       var c = svgEl("circle", {
         cx: sx(pxVal).toFixed(1),
@@ -413,8 +408,8 @@
         y1: sy(pyVal).toFixed(1),
         y2: sy(pyVal).toFixed(1),
         stroke: isCustom ? "#f7941e" : "#dd1019",
-        "stroke-opacity": isCustom ? 0.85 : (denseMode ? 0.24 : 0.52),
-        "stroke-width": isCustom ? 1.7 : (denseMode ? 1.0 : 1.3),
+        "stroke-opacity": isCustom ? 0.85 : 0.36,
+        "stroke-width": isCustom ? 1.7 : 1.15,
         "stroke-dasharray": "3 3"
       });
       el.residualsLayer.appendChild(seg);
@@ -423,29 +418,17 @@
 
     var totalCount = activePoints.length;
     var addedCount = state.addedPoints.length;
-    var realCount = state.data.scatter_sample.length + (state.includeExtra250 && Array.isArray(state.data.scatter_extra_250) ? state.data.scatter_extra_250.length : 0);
+    var realCount = state.data.scatter_sample.length;
 
-    if (addedCount === 0 && !state.includeExtra250) {
+    if (addedCount === 0) {
       el.scatterCountBadge.textContent = totalCount + " points réels";
-      el.scatterCountBadge.className = "badge badge-indigo";
-    } else if (addedCount === 0 && state.includeExtra250) {
-      el.scatterCountBadge.textContent = realCount + " points réels (50 + 250)";
       el.scatterCountBadge.className = "badge badge-indigo";
     } else {
       var suffix = addedCount > 1 ? "cliqués" : "cliqué";
       el.scatterCountBadge.textContent = totalCount + " points (" + realCount + " réels + " + addedCount + " " + suffix + ")";
       el.scatterCountBadge.className = "badge badge-amber";
     }
-
-    if (el.btnToggle250) {
-      el.btnToggle250.textContent = state.includeExtra250
-        ? "Retirer les 250 points réels"
-        : "+ 250 points réels (ANES)";
-      el.btnToggle250.className = state.includeExtra250
-        ? "btn btn-ghost btn-sm"
-        : "btn btn-secondary btn-sm";
-    }
-    el.btnClearPoints.disabled = addedCount === 0 && !state.includeExtra250;
+    el.btnClearPoints.disabled = addedCount === 0;
   }
 
   function initScatterSvg() {
@@ -490,7 +473,7 @@
       gridGroup.appendChild(lbl);
     });
 
-    [8, 10, 12, 14, 16, 18, 20].forEach(function (xv) {
+    [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20].forEach(function (xv) {
       var xx = sx(xv);
       gridGroup.appendChild(
         svgEl("line", {
@@ -509,7 +492,7 @@
         fill: "#555b62",
         "font-size": 11.5
       });
-      lbl.textContent = xv + " ans";
+      lbl.textContent = String(xv);
       gridGroup.appendChild(lbl);
     });
 
@@ -542,7 +525,7 @@
       "font-size": 12.5,
       "font-weight": 600
     });
-    xTitle.textContent = "Années d'études (etudes)";
+    xTitle.textContent = "Années d'études (etudes, en ans)";
     gridGroup.appendChild(xTitle);
 
     var yTitle = svgEl("text", {
@@ -592,7 +575,7 @@
       return;
     }
 
-    var xVal = Number(clamp(invSx(svgX), scatterGeom.xMin, scatterGeom.xMax).toFixed(1));
+    var xVal = Number(clamp(invSx(svgX), 0, 20).toFixed(1));
     var yVal = Math.round(clamp(invSy(svgY), scatterGeom.yMin, scatterGeom.yMax) / 500) * 500;
 
     var newPt = { x: xVal, y: yVal, custom: true };
@@ -661,7 +644,7 @@
     el.tab1MeterFill.classList.toggle("is-optimal", isOptimal);
 
     var globalOls = state.data.simple_ols;
-    el.tab1GlobalNote.hidden = state.addedPoints.length > 0 || state.includeExtra250;
+    el.tab1GlobalNote.hidden = state.addedPoints.length > 0;
     if (!el.tab1GlobalNote.hidden) {
       el.tab1GlobalNote.textContent =
         "Repère sur l'échantillon complet (N = " +
@@ -683,9 +666,11 @@
         "R² = " + fmt(activeOls.r2, 2) + " (" + fmt(activeOls.r2 * 100, 1) + " % expliqué)";
       el.tab1BadgeRmse.textContent = "RMSE optimal = " + fmtIncome(rmseOpt, 0);
 
-      if (state.addedPoints.length === 0 && !state.includeExtra250) {
+      if (state.addedPoints.length === 0) {
         el.tab1OlsInterp.textContent =
-          "Sur ces 50 foyers réels ANES 2024, chaque année d'études ajoute en moyenne " +
+          "Sur ces " +
+          nPts +
+          " foyers réels ANES 2024, chaque année d'études ajoute en moyenne " +
           fmtSignedIncome(activeOls.b1, 0) +
           " (" +
           fmtSignedIncome(globalOls.slope, 0) +
@@ -696,17 +681,6 @@
           " % de la variance ici (" +
           fmt(globalOls.r2 * 100, 1) +
           " % sur N = 4 734) : il manque les autres leviers !";
-      } else if (state.addedPoints.length === 0 && state.includeExtra250) {
-        el.tab1OlsInterp.textContent =
-          "Avec 300 foyers réels ANES 2024 (50 + 250), la pente optimale converge vers la tendance de l'enquête complète : " +
-          fmtSignedIncome(activeOls.b1, 0) +
-          " par année d'études (" +
-          fmtSignedIncome(globalOls.slope, 0) +
-          " sur N = " +
-          fmt(state.data.metadata.n, 0) +
-          "), R² = " +
-          fmt(activeOls.r2, 2) +
-          ".";
       } else {
         var addedWord = state.addedPoints.length > 1 ? "points ajoutés" : "point ajouté";
         el.tab1OlsInterp.textContent =
@@ -721,7 +695,7 @@
           " " +
           (activeOls.b1 >= 0 ? "+ " : "- ") +
           fmt(Math.abs(activeOls.b1), 0) +
-          " × etudes. Un seul cas extrême pèse d'autant moins que l'échantillon est grand !";
+          " × etudes. Chaque point ajouté déplace la règle linéaire !";
       }
     } else if (excess < 500) {
       el.tab1MeterStatus.textContent =
@@ -1973,22 +1947,8 @@
       updateTab1();
     });
 
-    if (el.btnToggle250) {
-      el.btnToggle250.addEventListener("click", function () {
-        state.includeExtra250 = !state.includeExtra250;
-        el.scatterTooltip.hidden = true;
-        renderScatterPoints();
-        if (state.autoOls) {
-          animateToOls();
-        } else {
-          updateTab1();
-        }
-      });
-    }
-
     el.btnClearPoints.addEventListener("click", function () {
       state.addedPoints = [];
-      state.includeExtra250 = false;
       el.scatterTooltip.hidden = true;
       renderScatterPoints();
       if (state.autoOls) {
@@ -2035,7 +1995,7 @@
     state.data = data;
     cacheElements();
 
-    if (data.metadata && data.metadata.n) {
+    if (el.dataNote && data.metadata && data.metadata.n) {
       el.dataNote.textContent =
         "Données réelles ANES 2024 (USA) · N = " +
         fmt(data.metadata.n, 0);

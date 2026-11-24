@@ -80,7 +80,7 @@
       #num-head("02", "Pratiquer (15 à 20 min)", accent: iep-red)
       #v(10pt)
       #set text(size: 12.5pt)
-      - #strong[Application interactive] : manipuler en direct « Le Laboratoire du Revenu » (`50` points réels cliquables, `6` variables socio-économiques).
+      - #strong[Application interactive] : manipuler en direct le « Workshop IA Explicable (XAI) » (`100` points réels cliquables, `6` variables socio-économiques).
       - #strong[Google Colab] : exécuter pas à pas une régression en Python (`statsmodels`) sans prérequis technique.
       - #strong[Expérimentation] : faire varier un paramètre à la fois, tester le double audit de biais et comparer boîte de verre et boîte noire.
     ],
@@ -91,7 +91,7 @@
   #callout-strip(
     "Fil rouge",
     [
-      Des #strong[données réelles d'enquête (`ANES 2024`, `N = 4 734` répondant·es, USA 2024)] : prédire le #strong[revenu annuel du foyer] (`revenu_annuel`, `$ / an`), visualiser tous les résidus sur #strong[`50` points cliquables], et mener un #strong[double audit de biais] (`femme` et `minorite`).
+      Des #strong[données réelles d'enquête (`ANES 2024`, `N = 4 734` répondant·es, USA 2024)] : prédire le #strong[revenu annuel du foyer] (`revenu_annuel`, `$ / an`), visualiser tous les résidus sur #strong[`100` points cliquables], et mener un #strong[double audit de biais] (`femme` et `minorite`).
     ],
     accent: iep-red,
   )
@@ -537,12 +537,12 @@
 ]
 
 // ============================================================================
-// Slide 10 : Démo en direct : Le Laboratoire du Revenu (5 onglets)
+// Slide 10 : Démo en direct : Workshop IA Explicable (5 onglets)
 // ============================================================================
 
 #slide(
   category: "Démonstration interactive (ANES 2024)",
-  title: "Démo en direct : Le Laboratoire du Revenu",
+  title: "Démo en direct : Workshop IA Explicable (XAI)",
 )[
   #grid(
     columns: (1fr, 1fr, 1fr),
@@ -560,12 +560,12 @@
       )
       #v(8pt)
       #text(font: font-heading, size: 14.5pt, weight: "bold", fill: iep-anthracite)[
-        1 paramètre
+        Un paramètre
       ]
       #v(8pt)
       #set text(size: 11.2pt)
-      - Observer `Y ~ X` sur #strong[50 points réels `ANES 2024`] (`-178.6 k$ + 18.4 k$ × etudes`, `RMSE = 63 718 $`) avec #strong[résidus sur tous les points].
-      - #strong[Cliquer] pour ajouter un profil extrême ou afficher #strong[`+250` points réels].
+      - Observer `Y ~ X` sur #strong[100 points réels `ANES 2024`] (`-128.8 k$ + 15.2 k$ × etudes`, `RMSE = 70 237 $`, axe de `0` à `20` ans) avec #strong[résidus sur tous les points].
+      - #strong[Cliquer] pour ajouter un profil extrême et voir la droite basculer en direct.
     ],
     [
       #line(length: 100%, stroke: 1.5pt + iep-anthracite)
@@ -598,7 +598,7 @@
       )
       #v(8pt)
       #text(font: font-heading, size: 14.5pt, weight: "bold", fill: iep-anthracite)[
-        Deep learning
+        Le Deep Learning
       ]
       #v(8pt)
       #set text(size: 11.2pt)
@@ -612,7 +612,7 @@
   #callout-strip(
     "Navigation (5 onglets)",
     [
-      #strong[Onglet 1 :] accueil (modèle, algorithme, XAI). #strong[Onglets 2, 3 et 4 :] mêmes données `ANES 2024`, seule change l'architecture mathématique. #strong[Onglet 5 :] accès direct au notebook #strong[Google Colab].
+      #strong[Onglet 1 (Introduction) :] modèle, algorithme, XAI. #strong[Onglets 2, 3 et 4 :] mêmes données `ANES 2024`, seule change l'architecture. #strong[Onglet 5 (Hack-time) :] accès direct au notebook #strong[Google Colab].
     ],
     accent: iep-red,
   )
@@ -920,11 +920,11 @@
       #text(font: font-heading, size: 22pt, weight: "bold", fill: iep-gray)[01]
       #v(6pt)
       #text(font: font-heading, size: 14.5pt, weight: "bold", fill: iep-anthracite)[
-        Tester le clic & +250 points
+        Tester le clic & les résidus
       ]
       #v(8pt)
       #set text(size: 11pt)
-      - Sur l'#strong[Onglet 2] (`50` points réels `ANES 2024`), cochez #emph[Afficher les erreurs], ajoutez un point au clic puis testez `+ 250 points réels`.
+      - Sur l'#strong[Onglet 2] (`Un paramètre`, `100` points réels `ANES 2024`), cochez #emph[Afficher les erreurs], puis ajoutez un point extrême au clic.
       - Testez `femme` et `minorite` sur les #strong[Onglets 3 et 4] (`7` vs `329` paramètres).
     ],
     [
@@ -937,7 +937,7 @@
       ]
       #v(8pt)
       #set text(size: 11pt)
-      - Depuis l'#strong[Onglet 5], ouvrez le #link("https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb")[#strong(text(fill: iep-red)[notebook Google Colab])] (dépôt #link("https://github.com/mickaeltemporao/workshop-xai")[GitHub]).
+      - Depuis l'#strong[Onglet 5] (`Hack-time`), ouvrez le #link("https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb")[#strong(text(fill: iep-red)[notebook Google Colab])] (dépôt #link("https://github.com/mickaeltemporao/workshop-xai")[GitHub]).
       - Chargez `ANES 2024` et retrouvez `R² = 0.31`, `femme` (`-8 007 $`) et `minorite` (`-10 328 $`).
     ],
     [

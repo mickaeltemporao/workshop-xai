@@ -4,7 +4,7 @@ Source: American National Election Studies (ANES) 2024 Time Series Study
 URL: https://raw.githubusercontent.com/datamisc/ts-2024/main/data.csv (gzipped CSV)
 Generates:
   - data/anes2024_clean.csv : Cleaned 7-column subset (N = 4 734)
-  - app/model-data.json     : OLS + 329-param MLP weights + presets + 50 real scatter points
+  - app/model-data.json     : OLS + 329-param MLP weights + presets + 100 real scatter points
   - app/model-data.js       : window.MODEL_DATA = ... (offline file:// compatibility)
 """
 
@@ -79,7 +79,7 @@ def with_jitter(df_sub: pd.DataFrame, seed: int) -> list[dict]:
         jy = float(rng.uniform(-2800.0, 2800.0))
         x_exact = int(row.etudes)
         y_exact = round(float(row.revenu_annuel), 0)
-        dx = round(float(np.clip(x_exact + jx, 7.2, 20.8)), 2)
+        dx = round(float(np.clip(x_exact + jx, 0.2, 20.8)), 2)
         dy = round(float(np.clip(y_exact + jy, 2500.0, 278000.0)), 0)
         pts.append({"x": x_exact, "y": y_exact, "dx": dx, "dy": dy})
     return pts
@@ -208,12 +208,10 @@ def main() -> None:
     y_vec = df[TARGET].to_numpy(dtype=float)
     mlp_data = train_blackbox_mlp(X_mat, y_vec, seed=42)
 
-    # 50 vrais repondants ANES 2024 de base + 250 points reels disjoints (etudes >= 8)
+    # 100 vrais repondants ANES 2024 (etudes >= 8 pour une plage representative, avec jitter esthetique)
     eligible = df[df["etudes"] >= 8]
-    sample_df = eligible.sample(n=50, random_state=42)[["etudes", "revenu_annuel"]]
-    extra_df = eligible.drop(sample_df.index).sample(n=250, random_state=43)[["etudes", "revenu_annuel"]]
+    sample_df = eligible.sample(n=100, random_state=42)[["etudes", "revenu_annuel"]]
     scatter_sample = with_jitter(sample_df, seed=101)
-    scatter_extra_250 = with_jitter(extra_df, seed=202)
 
     s_ols = smf.ols("revenu_annuel ~ etudes", data=sample_df).fit()
     s_pred = s_ols.predict(sample_df)
@@ -365,7 +363,6 @@ def main() -> None:
         "metadata": {
             "n": int(len(df)),
             "scatter_n": int(len(scatter_sample)),
-            "scatter_extra_n": int(len(scatter_extra_250)),
             "dataset": "ANES 2024 Time Series Study (USA)",
             "source_url": ANES_URL,
             "target": TARGET,
@@ -384,10 +381,10 @@ def main() -> None:
             "r2": round(float(model_simple.rsquared), 4),
             "rmse": round(simple_rmse, 0),
             "pvalue_slope": float(model_simple.pvalues["etudes"]),
-            "sample50_intercept": round(float(s_ols.params["Intercept"]), 1),
-            "sample50_slope": round(float(s_ols.params["etudes"]), 1),
-            "sample50_r2": round(float(s_ols.rsquared), 4),
-            "sample50_rmse": round(s_rmse, 0),
+            "sample100_intercept": round(float(s_ols.params["Intercept"]), 1),
+            "sample100_slope": round(float(s_ols.params["etudes"]), 1),
+            "sample100_r2": round(float(s_ols.rsquared), 4),
+            "sample100_rmse": round(s_rmse, 0),
         },
         "full_ols": {
             "formula": formula_full,
@@ -406,7 +403,6 @@ def main() -> None:
             ),
         },
         "scatter_sample": scatter_sample,
-        "scatter_extra_250": scatter_extra_250,
         "blackbox_mlp": mlp_data,
         "presets": presets,
     }
@@ -428,8 +424,8 @@ def main() -> None:
         f"R2 = {payload['simple_ols']['r2']:.4f}, RMSE = {payload['simple_ols']['rmse']:.0f} $/an"
     )
     print(
-        f"  Sample 50   : Intercept = {payload['simple_ols']['sample50_intercept']:.1f}, slope = {payload['simple_ols']['sample50_slope']:+.1f} $/an, "
-        f"R2 = {payload['simple_ols']['sample50_r2']:.4f}, RMSE = {payload['simple_ols']['sample50_rmse']:.0f} $/an"
+        f"  Sample 100  : Intercept = {payload['simple_ols']['sample100_intercept']:.1f}, slope = {payload['simple_ols']['sample100_slope']:+.1f} $/an, "
+        f"R2 = {payload['simple_ols']['sample100_r2']:.4f}, RMSE = {payload['simple_ols']['sample100_rmse']:.0f} $/an"
     )
     print("Full OLS (7 params):")
     print(f"  Intercept = {payload['full_ols']['intercept']:.1f}, R2 = {payload['full_ols']['r2']:.4f}, RMSE = {payload['full_ols']['rmse']:.0f} $/an")
