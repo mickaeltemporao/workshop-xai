@@ -21,7 +21,7 @@
       description: "18 ans d'études, 46 ans, en emploi, marié, homme blanc."
     },
     retraitee_minorite: {
-      label: "Retraitée seule (double protégé)",
+      label: "Retraitée seule",
       description: "12 ans d'études, 72 ans, hors emploi, femme minorité."
     }
   };
@@ -54,18 +54,18 @@
       hint: "Marié·e (foyer souvent à deux revenus) ou célibataire / divorcé·e / veuf·ve."
     },
     femme: {
-      label: "Sexe (attribut protégé)",
-      short: "Femme (biais)",
+      label: "Sexe",
+      short: "Femme",
       unit: "0 = Homme, 1 = Femme",
       options: ["Homme (0)", "Femme (1)"],
-      hint: "Attribut protégé : écart historique constaté dans ANES 2024, illicite dans un scoring équitable."
+      hint: "Effet statistiquement significatif (p < 0,001) à profil comparable."
     },
     minorite: {
-      label: "Origine / race (attribut protégé)",
-      short: "Minorité (biais)",
+      label: "Origine",
+      short: "Minorité",
       unit: "0 = Blanc non-hisp., 1 = Minorité",
       options: ["Blanc non-hisp. (0)", "Minorité racisée (1)"],
-      hint: "Attribut protégé (27,5 % de l'échantillon ANES 2024) : écart significatif p < 0,001."
+      hint: "Effet statistiquement significatif (p < 0,001) à profil comparable."
     }
   };
 
@@ -197,6 +197,14 @@
   function fmtSignedIncome(num, decimals) {
     var d = typeof decimals === "number" ? decimals : 0;
     return fmtSigned(num, d) + " $ / an";
+  }
+
+  function formatPval(p) {
+    if (typeof p !== "number" || isNaN(p)) return "";
+    if (p < 0.001) return "p < 0,001 ***";
+    if (p < 0.01) return "p < 0,01 **";
+    if (p < 0.05) return "p < 0,05 *";
+    return "n.s.";
   }
 
   function clamp(val, min, max) {
@@ -663,7 +671,7 @@
         el.tab1OlsInterp.textContent =
           "Sur ces " +
           nPts +
-          " foyers réels ANES 2024, chaque année d'études ajoute en moyenne " +
+          " foyers réels, chaque année d'études ajoute en moyenne " +
           fmtSignedIncome(activeOls.b1, 0) +
           " (" +
           fmtSignedIncome(globalOls.slope, 0) +
@@ -817,7 +825,7 @@
     state.data.feature_meta.forEach(function (meta) {
       var copy = getFeatureCopy(meta);
       var item = document.createElement("div");
-      item.className = "lever-item" + (meta.protected ? " is-protected" : "");
+      item.className = "lever-item";
 
       var top = document.createElement("div");
       top.className = "lever-top";
@@ -831,13 +839,6 @@
       lbl.setAttribute("for", inputId);
       lbl.textContent = compact ? copy.short : copy.label;
       labelWrap.appendChild(lbl);
-
-      if (meta.protected) {
-        var protPill = document.createElement("span");
-        protPill.className = "protected-pill";
-        protPill.textContent = "Audit de biais";
-        labelWrap.appendChild(protPill);
-      }
 
       var badge = document.createElement("span");
       badge.className = "lever-badge";
@@ -881,12 +882,10 @@
         item.appendChild(input);
       }
 
-      if (copy.hint && (!compact || meta.protected)) {
+      if (copy.hint && !compact) {
         var hint = document.createElement("p");
         hint.className = "lever-hint";
-        hint.textContent = meta.protected && compact
-          ? "Attribut protégé : ne devrait pas peser dans un scoring juste."
-          : copy.hint;
+        hint.textContent = copy.hint;
         item.appendChild(hint);
       }
 
@@ -1090,7 +1089,7 @@
       fmtDollar(pred.score, 0) +
       "</span>" +
       '<span class="eq-chip-res">' +
-      (isClamped ? "brut : " + fmtSigned(pred.raw, 0) + " $" : "ANES 2024") +
+      (isClamped ? "brut : " + fmtSigned(pred.raw, 0) + " $" : "modèle OLS") +
       "</span>";
     container.appendChild(totalChip);
   }
@@ -1135,7 +1134,7 @@
       el.tab2GhostMarker.hidden = true;
       el.btnClearA.hidden = true;
       el.compareReadout.textContent =
-        "Figez un profil puis basculez un seul critère (ex. Homme vers Femme, ou Blanc non-hisp. vers Minorité) pour mesurer son effet exact toutes choses égales par ailleurs.";
+        "Figez un profil puis changez un seul critère (ex. Homme vers Femme) pour isoler son effet exact.";
     }
 
     el.tab2ContribChart.innerHTML = "";
@@ -1143,22 +1142,23 @@
     state.data.feature_meta.forEach(function (meta) {
       var copy = getFeatureCopy(meta);
       var coef = ols.params[meta.key];
+      var pval = ols.pvalues && typeof ols.pvalues[meta.key] === "number" ? ols.pvalues[meta.key] : null;
+      var sigStr = pval !== null ? formatPval(pval) : "";
       var diffFromMean = state.profile[meta.key] - meta.mean;
       var contrib = coef * diffFromMean;
       var pct = clamp((Math.abs(contrib) / maxAbs) * 50, 0, 50);
       var isRight = contrib >= 0;
 
       var row = document.createElement("div");
-      row.className = "contrib-row" + (meta.protected ? " is-protected" : "");
+      row.className = "contrib-row";
 
       var nameDiv = document.createElement("div");
       nameDiv.className = "contrib-name";
-      var tagHtml = meta.protected ? ' <span class="protected-pill">Protégé</span>' : "";
       nameDiv.innerHTML =
         copy.short +
-        tagHtml +
         '<span class="contrib-sub">pente : ' +
         fmtSignedIncome(coef, 0) +
+        (sigStr ? ' · <strong class="sig-tag">' + sigStr + "</strong>" : "") +
         "</span>";
 
       var track = document.createElement("div");
@@ -1276,7 +1276,7 @@
         (j + 1) +
         " : activation actuelle = " +
         fmtSigned(pred.h1[j], 2) +
-        " · constante interne (biais) = " +
+        " · constante interne = " +
         fmtSigned(state.data.blackbox_mlp.b1[j], 3) +
         " · combine les 6 entrées à la fois (rôle isolé opaque).";
       return;
@@ -1297,7 +1297,7 @@
         (k + 1) +
         " : activation actuelle = " +
         fmtSigned(pred.h2[k], 2) +
-        " · constante interne (biais) = " +
+        " · constante interne = " +
         fmtSigned(state.data.blackbox_mlp.b2[k], 3) +
         " · agrège 16 neurones cachés vers la sortie (rôle isolé opaque).";
       return;
@@ -1313,7 +1313,7 @@
       el.mlpInspector.textContent =
         "Neurone de sortie : prédiction = " +
         fmtIncome(pred.score, 0) +
-        " · constante finale (biais) = " +
+        " · constante finale = " +
         fmtSigned(state.data.blackbox_mlp.b3, 3) +
         " · somme pondérée des 12 neurones C2 (329 paramètres au total).";
     }
@@ -1765,14 +1765,12 @@
       var isRight = item.slope >= 0;
 
       var row = document.createElement("div");
-      row.className = "contrib-row" + (item.isProtected ? " is-protected" : "");
+      row.className = "contrib-row";
 
       var nameDiv = document.createElement("div");
       nameDiv.className = "contrib-name";
-      var tagHtml = item.isProtected ? ' <span class="protected-pill">Protégé</span>' : "";
       nameDiv.innerHTML =
         item.short +
-        tagHtml +
         '<span class="contrib-sub">OLS fixe : ' +
         fmtSigned(item.olsSlope, 0) +
         " " +
@@ -1830,7 +1828,7 @@
       "pente positive ou en plateau en début et milieu de carrière (ex. vers 29-46 ans chez les actifs), puis pente négative à l'approche de la retraite (ex. vers 60-72 ans en activité) !";
 
     el.probeProxyCallout.innerHTML =
-      "<strong>Double audit de biais et risque de variables proxy :</strong> " +
+      "<strong>Biais et risque de variables proxy :</strong> " +
       "ici, la sonde locale mesure <strong>" +
       fmtSignedIncome(femmeProbe.slope, 0) +
       "</strong> sur <strong>Femme</strong> (contre " +
@@ -1839,9 +1837,9 @@
       fmtSignedIncome(minoriteProbe.slope, 0) +
       "</strong> sur <strong>Minorité</strong> (contre " +
       fmtSignedIncome(olsParams.minorite, 0) +
-      " en OLS). Attention : même si l'on supprime ces deux colonnes protégées d'un algorithme RH ou bancaire, " +
-      "un réseau de neurones opaque peut les reconstruire via des variables proxy corrélées " +
-      "(statut d'activité, situation maritale, niveau d'études, âge). D'où l'exigence d'audit et de traçabilité posée par l'<strong>AI Act européen</strong>.";
+      " en OLS). Même si l'on retire ces deux critères (sexe et origine) d'un algorithme RH ou bancaire, " +
+      "une boîte noire peut les reconstruire via des variables corrélées " +
+      "(statut d'activité, situation maritale, niveau d'études, âge). D'où l'exigence d'audit posée par l'<strong>AI Act européen</strong>.";
   }
 
   function updateTab3() {
@@ -1976,12 +1974,6 @@
   function initApp(data) {
     state.data = data;
     cacheElements();
-
-    if (el.dataNote && data.metadata && data.metadata.n) {
-      el.dataNote.textContent =
-        "Données réelles ANES 2024 (USA) · N = " +
-        fmt(data.metadata.n, 0);
-    }
 
     initScatterSvg();
     buildPresetsInto(el.presetsTab2, false);

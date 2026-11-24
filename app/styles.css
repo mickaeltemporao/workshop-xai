@@ -1659,6 +1659,11 @@ input[type="range"] {
   text-decoration: underline;
 }
 
+.sig-tag {
+  color: var(--teal);
+  font-weight: 700;
+}
+
 @media (max-width: 960px) {
   .tab-nav {
     display: flex;

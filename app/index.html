@@ -163,9 +163,9 @@
           <div class="card scatter-card">
             <div class="card-header">
               <div>
-                <h2 class="card-title">Et si on mesurait ce qu'apporte une année d'études supplémentaire ?</h2>
+                <h2 class="card-title">Faire des études rapporte-t-il vraiment ?</h2>
                 <p class="card-desc">
-                  Chaque point bleu représente un foyer réel (ANES 2024). Déplacez la droite au plus près du nuage, ou cliquez dans le graphique pour ajouter un point.
+                  Chaque point bleu représente un foyer réel. Vous pouvez cliquer dans le graphique pour ajouter des points.
                 </p>
               </div>
               <div class="scatter-toggles">
@@ -354,7 +354,7 @@
                 <div>
                   <h3 class="card-subtitle">Ce qui pèse dans cette prédiction</h3>
                   <p class="card-desc">
-                    Écart de chaque critère par rapport à la moyenne de l'enquête (97 347 $ / an).
+                    Écart de chaque critère par rapport à la moyenne (97 347 $ / an). <code>***</code> : effet statistiquement significatif (<code>p &lt; 0,001</code>).
                   </p>
                 </div>
                 <span class="badge badge-neutral">R² = 0,31 · RMSE = 64 267 $ / an</span>
@@ -471,7 +471,6 @@
                     <span class="leg-neg">Poids ou activation négative</span>
                     <span class="leg-zero">Proche de 0</span>
                     <span class="leg-pos">Poids ou activation positive</span>
-                    <span class="leg-prot">Attribut protégé (audit de biais)</span>
                   </div>
 
                   <div id="mlp-inspector" class="mlp-inspector" aria-live="polite">
@@ -544,7 +543,7 @@
             <span class="eyebrow">Hack-time · Google Colab</span>
             <h2 class="landing-title">Passer au code Python sans rien installer</h2>
             <p class="landing-lead">
-              Ouvrez le notebook dans votre navigateur pour explorer les données <strong>ANES 2024</strong> et tester les biais par vous-même.
+              Ouvrez le notebook dans votre navigateur pour explorer les données réelles et tester les biais par vous-même.
             </p>
             <div class="colab-actions">
               <a
