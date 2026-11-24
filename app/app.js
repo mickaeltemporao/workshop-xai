@@ -120,6 +120,7 @@
     el.btnFindOls = document.getElementById("btn-find-ols");
     el.btnResetTab1 = document.getElementById("btn-reset-tab1");
     el.btnClearPoints = document.getElementById("btn-clear-points");
+    el.tab1ErrorCard = document.getElementById("tab1-error-card");
     el.tab1RmseUserLabel = document.getElementById("tab1-rmse-user-label");
     el.tab1RmseOlsLabel = document.getElementById("tab1-rmse-ols-label");
     el.tab1RmseUser = document.getElementById("tab1-rmse-user");
@@ -618,6 +619,9 @@
     el.userLine.setAttribute("stroke", isOptimal ? "#024d5f" : "#dd1019");
 
     el.residualsLayer.style.display = state.showResiduals ? "block" : "none";
+    if (el.tab1ErrorCard) {
+      el.tab1ErrorCard.hidden = !state.showResiduals;
+    }
     if (state.showResiduals) {
       el.residualNodes.forEach(function (item) {
         var yhatVisual = b0 + b1 * getPointPlotX(item.pt);
