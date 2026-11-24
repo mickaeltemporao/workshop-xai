@@ -8,7 +8,7 @@ Teaching materials (in French) for a **35 to 40 minute** introductory workshop o
 ## What is included
 
 - **Typst Slides (`15-20 min`)**: [slides/xai-workshop.typ](slides/xai-workshop.typ) (compiled PDF in [build/slides-xai.pdf](build/slides-xai.pdf)) covering models as heuristics, algorithms as recipes, glass-box regressions (`annual_income ~ education`, `2` and `7` parameters) vs. neural networks (`329` parameters) and LLMs, bias auditing (`female`, `minority`), and local XAI probes.
-- **Interactive Web App**: [app/index.html](app/index.html) is a zero-dependency static HTML/CSS/JS app (Vercel-ready and offline `file://` compatible) organized in **5 full-width tabs**:
+- **Interactive Web App**: [app/index.html](app/index.html) (live via GitHub Pages at [mickaeltemporao.github.io/workshop-xai](https://mickaeltemporao.github.io/workshop-xai/)) is a zero-dependency static HTML/CSS/JS app (GitHub Pages / Vercel-ready and offline `file://` compatible) organized in **5 full-width tabs**:
   1. **`Introduction`**: George Box's quote and core intuition (model, algorithm, XAI).
   2. **`Une droite`**: fit a line starting at `(0, 0)` over `100` real respondents (`seed = 5`, including `1` point at `education = 8`), toggle residuals on all points, or click to add points.
   3. **`Des paramètres`**: `7`-parameter OLS model with `p < 0.001 ***` significance tags and `Profil A` counterfactual comparison.
@@ -57,8 +57,9 @@ make slides    # Compile build/slides-xai.pdf
 make preview   # Export PNG previews to build/previews/
 ```
 
-### Deploy the web app on Vercel
-Deploy `app/` directly as a static directory (**Root Directory**: `app`, empty build command, output directory `.`) or run `npx vercel --prod` inside `app/`.
+### Deploy the web app (GitHub Pages or Vercel)
+- **GitHub Pages (automatic)**: in repository **Settings > Pages > Build and deployment > Source**, select **GitHub Actions**. Every push updating `app/` deploys automatically via [.github/workflows/pages.yml](.github/workflows/pages.yml) to `https://mickaeltemporao.github.io/workshop-xai/`.
+- **Vercel**: deploy `app/` directly as a static directory (**Root Directory**: `app`, empty build command, output directory `.`) or run `npx vercel --prod` inside `app/`.
 
 ### Data source (`ANES 2024`)
 Variables extracted from the **American National Election Studies (ANES) 2024 Time Series Study** (`N = 4 734`): `education`, `age`, `employed`, `married`, `female`, `minority`, and `annual_income` (`$ US / year`, bracket midpoints). The `100`-point scatter sample uses `SCATTER_SAMPLE_SEED = 5` (includes `1` respondent below `10` years of schooling at `education = 8`).
