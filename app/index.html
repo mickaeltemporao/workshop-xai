@@ -163,20 +163,15 @@
           <div class="card scatter-card">
             <div class="card-header">
               <div>
-                <h2 class="card-title">Un seul levier : revenu_annuel ~ etudes (100 points réels ANES 2024)</h2>
+                <h2 class="card-title">Et si on mesurait ce qu'apporte une année d'études supplémentaire ?</h2>
                 <p class="card-desc">
-                  Chaque point bleu représente un foyer réel de l'enquête ANES 2024 (100 profils tirés parmi 4 734, avec léger jitter visuel).
-                  Placez la droite au plus près du nuage, ou ajoutez des points en cliquant dans le graphique.
+                  Chaque point bleu représente un foyer réel (ANES 2024). Déplacez la droite au plus près du nuage, ou cliquez dans le graphique pour ajouter un point.
                 </p>
               </div>
               <div class="scatter-toggles">
                 <label class="toggle-check" for="toggle-residuals">
                   <input type="checkbox" id="toggle-residuals">
-                  <span>Afficher les erreurs (résidus sur tous les points)</span>
-                </label>
-                <label class="toggle-check" for="toggle-auto-ols">
-                  <input type="checkbox" id="toggle-auto-ols">
-                  <span>Ajuster l'optimum automatiquement au clic</span>
+                  <span>Afficher les erreurs (résidus)</span>
                 </label>
               </div>
             </div>
@@ -184,7 +179,7 @@
             <div class="scatter-status-strip">
               <span id="scatter-count-badge" class="badge badge-indigo">100 points réels</span>
               <span class="scatter-prompt">
-                Cliquez dans le graphique pour ajouter un profil (ex. un cas extrême) et observer l'effet sur la droite.
+                Cliquez dans le graphique pour ajouter un point et observer son effet sur la droite.
               </span>
             </div>
 
@@ -202,41 +197,41 @@
 
           <aside class="controls-col">
             <div class="card">
-              <h2 class="card-title">Vos 2 paramètres de réglage</h2>
+              <h2 class="card-title">Régler la droite</h2>
               <p class="card-desc">
-                Modifiez la hauteur de départ et la pente selon les années d'études :
+                Ajustez le point de départ et la pente :
                 <code>ŷ = β₀ + β₁ · etudes</code>
               </p>
 
               <div class="slider-group">
                 <div class="slider-head">
-                  <label for="slider-b0">Hauteur de départ (β₀, en $ / an)</label>
-                  <span id="val-b0" class="slider-val">-40 000 $ / an</span>
+                  <label for="slider-b0">Point de départ (β₀)</label>
+                  <span id="val-b0" class="slider-val">0 $ / an</span>
                 </div>
-                <input id="slider-b0" type="range" min="-250000" max="100000" step="2000" value="-40000">
-                <p class="slider-hint">Revenu annuel théorique à 0 an d'études (extrapolation mathématique de la droite).</p>
+                <input id="slider-b0" type="range" min="-250000" max="100000" step="2000" value="0">
+                <p class="slider-hint">Valeur théorique à 0 an d'études (extrapolation hors des données).</p>
               </div>
 
               <div class="slider-group">
                 <div class="slider-head">
-                  <label for="slider-b1">Pente sur les années d'études (β₁, en $ / an)</label>
-                  <span id="val-b1" class="slider-val">+8 000 $ / an</span>
+                  <label for="slider-b1">Pente par année d'études (β₁)</label>
+                  <span id="val-b1" class="slider-val">+6 000 $ / an</span>
                 </div>
-                <input id="slider-b1" type="range" min="-5000" max="25000" step="250" value="8000">
-                <p class="slider-hint">Variation moyenne du revenu annuel du foyer (en $ / an) pour chaque année d'études supplémentaire.</p>
+                <input id="slider-b1" type="range" min="-5000" max="25000" step="250" value="6000">
+                <p class="slider-hint">Gain moyen ($ / an) pour chaque année d'études supplémentaire.</p>
               </div>
 
               <div class="live-equation-box">
-                <span class="eq-kicker">Votre équation actuelle</span>
-                <div id="tab1-eq-live" class="eq-mono">ŷ = -40 000 + 8 000 × etudes</div>
+                <span class="eq-kicker">Votre droite</span>
+                <div id="tab1-eq-live" class="eq-mono">ŷ = 0 + 6 000 × etudes</div>
               </div>
 
               <div class="btn-row-tab1">
                 <button id="btn-find-ols" class="btn btn-primary" type="button">
-                  Trouver la droite optimale (OLS)
+                  Droite optimale (OLS)
                 </button>
                 <button id="btn-reset-tab1" class="btn btn-ghost btn-sm" type="button">
-                  Réinitialiser la droite
+                  Réinitialiser
                 </button>
               </div>
               <div class="btn-row-tab1-sub">
@@ -247,7 +242,7 @@
             </div>
 
             <div class="card error-meter-card">
-              <h3 class="card-subtitle">Compteur d'erreur moyenne (RMSE : écart typique)</h3>
+              <h3 class="card-subtitle">Erreur moyenne (RMSE)</h3>
               <div class="meter-numbers">
                 <div>
                   <span id="tab1-rmse-user-label" class="metric-label">Votre erreur (100 pts)</span>
@@ -295,14 +290,14 @@
         <div class="grid-two-col">
           <aside class="card levers-card">
             <div class="card-header-compact">
-              <h2 class="card-title">Construire un profil · 7 paramètres</h2>
+              <h2 class="card-title">Construire un profil</h2>
               <button id="btn-reset-tab2" class="btn btn-ghost btn-sm" type="button">
                 Profil typique
               </button>
             </div>
 
             <div class="presets-block">
-              <span class="block-label">Profils types en un clic</span>
+              <span class="block-label">Profils types</span>
               <div id="presets-tab2" class="presets-grid"></div>
             </div>
 
@@ -313,8 +308,8 @@
             <div class="card gauge-card">
               <div class="gauge-top">
                 <div>
-                  <span class="eyebrow">Boîte de verre : tout est visible (régression OLS · 7 paramètres)</span>
-                  <h2 class="card-title">Revenu annuel du foyer prédit</h2>
+                  <span class="eyebrow">Modèle transparent · 7 paramètres</span>
+                  <h2 class="card-title">Revenu annuel prédit</h2>
                 </div>
                 <div class="score-hero">
                   <strong id="tab2-score-value" class="score-number">127 848 $</strong>
@@ -342,14 +337,14 @@
               <div class="compare-bar">
                 <div class="compare-actions">
                   <button id="btn-freeze-a" class="btn btn-secondary btn-sm" type="button">
-                    Comparer : figer comme Profil A
+                    Comparer (figer Profil A)
                   </button>
                   <button id="btn-clear-a" class="btn btn-ghost btn-sm" type="button" hidden>
                     Effacer Profil A
                   </button>
                 </div>
                 <div id="compare-readout" class="compare-readout" aria-live="polite">
-                  Figez un profil puis basculez un seul critère (ex. Homme vers Femme, ou Blanc non-hisp. vers Minorité) pour mesurer son effet exact toutes choses égales par ailleurs.
+                  Figez un profil puis changez un seul critère (ex. Homme vers Femme) pour isoler son effet exact.
                 </div>
               </div>
             </div>
@@ -357,10 +352,9 @@
             <div class="card">
               <div class="card-header-compact">
                 <div>
-                  <h3 class="card-subtitle">Décomposition exacte des contributions</h3>
+                  <h3 class="card-subtitle">Ce qui pèse dans cette prédiction</h3>
                   <p class="card-desc">
-                    Écart en $ / an de chaque critère par rapport à la moyenne de l'échantillon (97 347 $ / an) :
-                    <code>βᵢ × (xᵢ - moyenneᵢ)</code>
+                    Écart de chaque critère par rapport à la moyenne de l'enquête (97 347 $ / an).
                   </p>
                 </div>
                 <span class="badge badge-neutral">R² = 0,31 · RMSE = 64 267 $ / an</span>
@@ -369,9 +363,9 @@
             </div>
 
             <div class="card">
-              <h3 class="card-subtitle">Équation transparente en direct</h3>
+              <h3 class="card-subtitle">La formule du modèle en direct</h3>
               <p class="card-desc">
-                Chaque terme ci-dessous correspond à une règle fixe en $ / an. La dernière variable modifiée est surlignée.
+                Chaque critère a un effet fixe en $ / an. La dernière variable modifiée est mise en avant.
               </p>
               <div id="tab2-equation-live" class="equation-tokens"></div>
             </div>
@@ -405,15 +399,15 @@
               <div class="mode-switch-row">
                 <div class="mode-switch" role="group" aria-label="Choix du modèle">
                   <button id="mode-btn-glass" class="mode-btn is-active" type="button" data-mode="glass">
-                    Boîte de verre (Régression OLS · 7 paramètres)
+                    Modèle transparent (7 paramètres)
                   </button>
                   <button id="mode-btn-black" class="mode-btn" type="button" data-mode="black">
-                    Boîte noire (Réseau de neurones · 329 paramètres)
+                    Boîte noire (Réseau · 329 paramètres)
                   </button>
                 </div>
                 <div class="dual-score-strip">
                   <div class="dual-pill">
-                    <span>Boîte de verre</span>
+                    <span>Transparent</span>
                     <strong id="tab3-score-ols">127 848 $ / an</strong>
                   </div>
                   <div class="dual-pill is-accent">
@@ -436,17 +430,15 @@
             </div>
 
             <div id="tab3-glass-view" class="card">
-              <h3 class="card-subtitle">Une seule formule globale valable pour tout le monde</h3>
+              <h3 class="card-subtitle">Une règle fixe, identique pour tout le monde</h3>
               <p class="card-desc">
-                Dans la régression OLS, chaque critère garde exactement le même effet quel que soit le profil :
-                une année d'études ajoute toujours <strong>+10 998 $ / an</strong>, être marié·e ajoute <strong>+48 093 $ / an</strong>
-                et l'âge retire toujours <strong>-227 $ / an</strong>, tandis que les attributs protégés retirent toujours
-                <strong>-8 007 $ / an</strong> pour <strong>Femme</strong> et <strong>-10 328 $ / an</strong> pour <strong>Minorité</strong>,
-                quel que soit l'âge ou le niveau de diplôme.
+                Dans la régression linéaire, chaque critère garde le même poids quel que soit le profil :
+                <strong>+10 998 $ / an</strong> par année d'études, <strong>+48 093 $ / an</strong> pour marié·e,
+                <strong>-8 007 $ / an</strong> pour <strong>Femme</strong> et <strong>-10 328 $ / an</strong> pour <strong>Minorité</strong>.
               </p>
               <div id="tab3-glass-eq" class="equation-tokens"></div>
               <div class="code-snippet">
-                <span class="code-label">Code Python complet du modèle (7 paramètres)</span>
+                <span class="code-label">Code Python complet (7 paramètres)</span>
                 <code>smf.ols("revenu_annuel ~ etudes + age + en_emploi + marie + femme + minorite", data=df).fit()</code>
               </div>
             </div>
@@ -455,11 +447,10 @@
               <div class="card">
                 <div class="card-header-compact">
                   <div>
-                    <h3 class="card-subtitle">À l'intérieur de la boîte noire : réseau de neurones à 329 paramètres</h3>
+                    <h3 class="card-subtitle">À l'intérieur de la boîte noire (329 paramètres)</h3>
                     <p class="card-desc">
-                      Aucune formule linéaire unique n'existe ici : les 6 entrées traversent deux couches cachées
-                      non linéaires (fonction <code>tanh</code>) de 16 puis 12 neurones (300 connexions + 29 constantes internes).
-                      Survolez ou cliquez sur n'importe quel neurone ou connexion.
+                      Plus de formule unique : les 6 critères traversent deux couches cachées de 16 puis 12 neurones.
+                      Survolez ou cliquez sur un neurone ou une connexion.
                     </p>
                   </div>
                   <span class="badge badge-red">R² = 0,34 · RMSE = 62 837 $ / an</span>
@@ -484,7 +475,7 @@
                   </div>
 
                   <div id="mlp-inspector" class="mlp-inspector" aria-live="polite">
-                    Survolez ou touchez un neurone ou une connexion parmi les 329 paramètres pour explorer la boîte noire.
+                    Survolez ou cliquez sur un neurone ou une connexion pour inspecter la boîte noire.
                   </div>
                 </div>
               </div>
@@ -492,21 +483,19 @@
               <div class="card probe-card">
                 <div class="probe-header">
                   <div>
-                    <h3 class="card-subtitle">Comment ouvrir la boîte noire ? Sonde XAI locale</h3>
+                    <h3 class="card-subtitle">Interroger la boîte noire (sonde locale)</h3>
                     <p class="card-desc">
-                      Comme on ne peut pas lire les 329 poids d'un coup, on interroge le modèle en secouant légèrement
-                      chaque levier autour <strong>de ce profil précis</strong> (perturbation symétrique pour les études et l'âge ;
-                      bascule <code>0 &lt;-&gt; 1</code> pour les critères binaires, à la manière de LIME ou SHAP local).
+                      On secoue légèrement chaque critère autour <strong>de ce profil précis</strong> pour estimer ce qui pèse ici, à la manière de LIME ou SHAP.
                     </p>
                   </div>
                   <button id="btn-run-probe" class="btn btn-primary" type="button">
-                    Lancer une sonde XAI locale (perturbation)
+                    Lancer la sonde locale
                   </button>
                 </div>
 
                 <div id="probe-results" class="probe-results" hidden>
                   <p class="lever-hint" style="margin-bottom: 0.45rem;">
-                    Longueur des barres : effet standardisé (pour un écart-type) ; chiffres à droite : impact local en $ / an.
+                    Longueur des barres : effet standardisé ; chiffres à droite : impact local en $ / an.
                   </p>
                   <div id="probe-bars" class="contrib-chart"></div>
                   <div id="probe-callout" class="probe-callout"></div>
@@ -516,7 +505,7 @@
             </div>
 
             <div class="card ladder-card">
-              <span class="block-label">Échelle de complexité des modèles</span>
+              <span class="block-label">De la droite aux grands modèles</span>
               <div class="complexity-ladder">
                 <div class="ladder-step">
                   <strong>2 paramètres</strong>
@@ -552,11 +541,10 @@
       >
         <div class="colab-stack">
           <div class="card colab-hero">
-            <span class="eyebrow">Hack-time · Google Colab (aucune installation)</span>
-            <h2 class="landing-title">Ouvrir le notebook Python dans Google Colab</h2>
+            <span class="eyebrow">Hack-time · Google Colab</span>
+            <h2 class="landing-title">Passer au code Python sans rien installer</h2>
             <p class="landing-lead">
-              Ce notebook guidé sans prérequis charge directement les vraies données <strong>ANES 2024 (N = 4 734)</strong>,
-              ajuste les régressions avec <code>statsmodels</code> et propose des curseurs interactifs pour auditer les biais.
+              Ouvrez le notebook dans votre navigateur pour explorer les données <strong>ANES 2024</strong> et tester les biais par vous-même.
             </p>
             <div class="colab-actions">
               <a
@@ -578,7 +566,7 @@
             </div>
 
             <div class="code-snippet">
-              <span class="code-label">Lien direct GitHub vers Google Colab</span>
+              <span class="code-label">Lien direct Google Colab</span>
               <code>https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb</code>
             </div>
           </div>
@@ -586,25 +574,25 @@
           <div class="colab-steps-grid">
             <article class="card colab-step-card">
               <span class="concept-num">Étape 1</span>
-              <h3 class="concept-title">Enregistrer une copie dans Drive</h3>
+              <h3 class="concept-title">Copier dans Drive</h3>
               <p class="concept-body">
-                Une fois le notebook ouvert, passez par <em>Fichier &gt; Enregistrer une copie dans Drive</em> si vous souhaitez conserver vos résultats et modifications.
+                <em>Fichier &gt; Enregistrer une copie dans Drive</em> pour garder vos propres essais.
               </p>
             </article>
 
             <article class="card colab-step-card">
               <span class="concept-num">Étape 2</span>
-              <h3 class="concept-title">Exécuter de haut en bas avec ▶</h3>
+              <h3 class="concept-title">Lancer avec ▶</h3>
               <p class="concept-body">
-                Aucune installation requise : <code>pandas</code>, <code>numpy</code>, <code>statsmodels</code> et <code>matplotlib</code> sont déjà préinstallés sur Colab.
+                Exécutez les cellules de haut en bas : tout est déjà prêt sur Colab.
               </p>
             </article>
 
             <article class="card colab-step-card">
               <span class="concept-num">Étape 3</span>
-              <h3 class="concept-title">Relever les 2 défis Hack-time</h3>
+              <h3 class="concept-title">Tester les 2 défis</h3>
               <p class="concept-body">
-                Testez l'audit de biais (<code>femme</code>, <code>minorite</code>) avec les curseurs du formulaire, puis comparez l'effet de l'âge avec l'Onglet 4 (Deep Learning).
+                Auditez les biais (<code>femme</code>, <code>minorite</code>), puis comparez avec l'Onglet 4 (Deep Learning).
               </p>
             </article>
           </div>

@@ -4,8 +4,8 @@
   var SVG_NS = "http://www.w3.org/2000/svg";
   var PRED_MIN = 2500;
   var PRED_MAX = 275000;
-  var TAB1_DEFAULT_B0 = -40000;
-  var TAB1_DEFAULT_B1 = 8000;
+  var TAB1_DEFAULT_B0 = 0;
+  var TAB1_DEFAULT_B1 = 6000;
 
   var FRENCH_PRESET_COPY = {
     typique: {
@@ -76,7 +76,6 @@
     b1: TAB1_DEFAULT_B1,
     addedPoints: [],
     showResiduals: false,
-    autoOls: false,
     olsAnimId: null,
     profile: {
       etudes: 14,
@@ -113,7 +112,6 @@
     el.scatterTooltip = document.getElementById("scatter-tooltip");
     el.scatterCountBadge = document.getElementById("scatter-count-badge");
     el.toggleResiduals = document.getElementById("toggle-residuals");
-    el.toggleAutoOls = document.getElementById("toggle-auto-ols");
     el.sliderB0 = document.getElementById("slider-b0");
     el.sliderB1 = document.getElementById("slider-b1");
     el.valB0 = document.getElementById("val-b0");
@@ -582,12 +580,7 @@
     state.addedPoints.push(newPt);
     renderScatterPoints();
     showPointTooltip(newPt);
-
-    if (state.autoOls) {
-      animateToOls();
-    } else {
-      updateTab1();
-    }
+    updateTab1();
   }
 
   function updateTab1() {
@@ -1928,13 +1921,6 @@
       updateTab1();
     });
 
-    el.toggleAutoOls.addEventListener("change", function (e) {
-      state.autoOls = Boolean(e.target.checked);
-      if (state.autoOls) {
-        animateToOls();
-      }
-    });
-
     el.btnFindOls.addEventListener("click", animateToOls);
 
     el.btnResetTab1.addEventListener("click", function () {
@@ -1951,11 +1937,7 @@
       state.addedPoints = [];
       el.scatterTooltip.hidden = true;
       renderScatterPoints();
-      if (state.autoOls) {
-        animateToOls();
-      } else {
-        updateTab1();
-      }
+      updateTab1();
     });
 
     el.btnResetTab2.addEventListener("click", resetToTypicalPreset);
