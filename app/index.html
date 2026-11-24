@@ -10,15 +10,8 @@
   <div class="app-shell">
     <header class="site-header">
       <div class="header-inner">
-        <div class="brand-block">
-          <div class="brand-mark" aria-hidden="true">XAI</div>
-          <div>
-            <h1 class="site-title">Workshop IA Explicable (XAI)</h1>
-            <p class="site-subtitle">
-              De la droite de régression aux réseaux de neurones : comprendre la transparence, la précision et les biais d'un modèle
-            </p>
-          </div>
-        </div>
+        <h1 class="site-title">Workshop IA Explicable (XAI)</h1>
+        <div class="brand-mark" aria-hidden="true">XAI</div>
       </div>
 
       <nav class="tab-nav" role="tablist" aria-label="Étapes de l'atelier">
@@ -94,9 +87,9 @@
       >
         <div class="landing-stack">
           <blockquote class="card quote-hero">
-            <span class="quote-mark" aria-hidden="true">“</span>
             <p class="quote-hero-text">
-              Tous les modèles sont faux, mais certains sont utiles.
+              <span class="quote-prompt" aria-hidden="true">&gt;</span>
+              <span>All models are wrong, but some are useful.</span>
             </p>
             <footer class="quote-hero-author">
               George E. P. Box (1976)
@@ -105,8 +98,8 @@
 
           <div class="landing-grid-3">
             <article class="card concept-card">
-              <span class="concept-num">01 · Modèle</span>
-              <h2 class="concept-title">Une heuristique (simplification)</h2>
+              <h2 class="concept-title"><span class="concept-index">01 ·</span> Modèle</h2>
+              <span class="concept-sub">Une simplification</span>
               <p class="concept-body">
                 Un modèle ne copie pas tout le réel : il simplifie volontairement le monde pour s'orienter, exactement comme un plan du tram face à une photo satellite.
               </p>
@@ -116,24 +109,24 @@
             </article>
 
             <article class="card concept-card">
-              <span class="concept-num">02 · Algorithme</span>
-              <h2 class="concept-title">Une recette</h2>
+              <h2 class="concept-title"><span class="concept-index">02 ·</span> Algorithme</h2>
+              <span class="concept-sub">Une recette</span>
               <p class="concept-body">
                 Un algorithme est une suite finie d'étapes qui transforme des données d'entrée en résultat.
               </p>
               <p class="concept-body">
-                En <em>Machine Learning</em>, on ne dicte plus chaque règle à la main : la machine apprend elle-même la recette en observant des exemples réels (<code>ANES 2024</code>).
+                En <em>Machine Learning</em>, on ne dicte plus chaque règle à la main : la machine apprend elle-même la recette en observant des exemples réels.
               </p>
             </article>
 
             <article class="card concept-card">
-              <span class="concept-num">03 · IA Explicable (XAI)</span>
-              <h2 class="concept-title">Ouvrir la boîte</h2>
+              <h2 class="concept-title"><span class="concept-index">03 ·</span> IA Explicable (XAI)</h2>
+              <span class="concept-sub">Ouvrir la boîte</span>
               <p class="concept-body">
-                À <code>2</code> ou <code>7</code> paramètres (<strong>boîte de verre</strong>), chaque règle est directement lisible et permet d'auditer les biais (<code>femme</code>, <code>minorite</code>).
+                Dans une boîte transparente, chaque règle est directement lisible et nous permet d'auditer ses biais (femme, minorité, ...).
               </p>
               <p class="concept-body">
-                Quand le modèle devient <strong>boîte noire</strong> (deep learning), l'XAI teste ses décisions de l'extérieur pour comprendre ce qui pèse localement.
+                Quand le modèle devient une boîte noire, il devient beaucoup plus compliqué d'exposer concrètement ses biais (ex. justice prédictive COMPAS, tri automatique de CV ou scoring bancaire).
               </p>
             </article>
           </div>
