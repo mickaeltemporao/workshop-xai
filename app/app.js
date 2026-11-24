@@ -1845,7 +1845,7 @@
       "une boîte noire peut les reconstruire via des variables corrélées " +
       "(statut d'activité, situation maritale, niveau d'études, âge). " +
       "C'est ce qu'a illustré le cas célèbre de <strong>COMPAS</strong> (justice américaine) : même sans variable d'origine, " +
-      "l'algorithme classait presque deux fois plus souvent à tort des prévenus noirs « à haut risque » via des variables proxy " +
+      "l'algorithme classait presque deux fois plus souvent à tort des personnes afro-américaines « à haut risque » via des variables proxy " +
       "(quartier, environnement). Sans accès aux poids réels des paramètres, un biais reste difficile à prouver et à corriger : " +
       "d'où l'exigence d'audit et de transparence posée par l'<strong>AI Act européen</strong>.";
   }
