@@ -1450,12 +1450,38 @@ input[type="range"] {
 .quote-hero {
   position: relative;
   margin: 0;
-  padding: 2.1rem 2.2rem 1.9rem;
-  text-align: center;
+  padding: 1.9rem 2.2rem 1.65rem;
   background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
   border: 1px solid var(--border);
   border-top: 4px solid var(--red);
   box-shadow: var(--shadow-md);
+}
+
+.quote-hero-body {
+  position: relative;
+  padding: 0.65rem 2.5rem;
+  text-align: center;
+}
+
+.quote-mark {
+  position: absolute;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--red);
+  opacity: 0.26;
+  user-select: none;
+  pointer-events: none;
+}
+
+.quote-mark-open {
+  top: -0.45rem;
+  left: 0.1rem;
+}
+
+.quote-mark-close {
+  bottom: -1.35rem;
+  right: 0.1rem;
 }
 
 .quote-hero-text {
@@ -1480,7 +1506,9 @@ input[type="range"] {
 }
 
 .quote-hero-author {
-  margin-top: 0.85rem;
+  margin-top: 1.05rem;
+  padding-right: 0.15rem;
+  text-align: right;
   font-size: 0.88rem;
   font-weight: 750;
   letter-spacing: 0.06em;
