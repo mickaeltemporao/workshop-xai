@@ -79,6 +79,9 @@ code {
 }
 
 .brand-mark {
+  appearance: none;
+  border: none;
+  font-family: inherit;
   width: 44px;
   height: 44px;
   border-radius: 8px;
@@ -90,6 +93,23 @@ code {
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.brand-mark:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-mark:active {
+  transform: translateY(0);
+}
+
+.brand-mark:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
 }
 
 .site-title {
@@ -1694,4 +1714,120 @@ input[type="range"] {
     padding-left: 0.9rem;
     padding-right: 0.9rem;
   }
+}
+
+/* Fenetre modale QR code */
+.qr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.qr-modal[hidden] {
+  display: none;
+}
+
+.qr-card {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem 2rem 1.75rem;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.qr-close-icon {
+  position: absolute;
+  top: 0.95rem;
+  right: 0.95rem;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color 0.14s ease, border-color 0.14s ease, background-color 0.14s ease;
+}
+
+.qr-close-icon:hover {
+  color: var(--ink);
+  border-color: var(--ink-subtle);
+  background: var(--surface-alt);
+}
+
+.qr-close-icon:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.qr-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+
+.qr-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+.qr-frame {
+  margin: 0.45rem 0 0.3rem;
+  padding: 0.75rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-svg {
+  display: block;
+  width: min(300px, 68vw);
+  height: min(300px, 68vw);
+}
+
+.qr-url-link {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: clamp(0.84rem, 1.8vw, 1.02rem);
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--surface-alt);
+  padding: 0.65rem 1.05rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: color 0.14s ease, border-color 0.14s ease, background-color 0.14s ease;
+}
+
+.qr-url-link:hover {
+  color: var(--red);
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.qr-actions {
+  margin-top: 0.35rem;
 }

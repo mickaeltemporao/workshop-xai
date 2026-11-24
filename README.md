@@ -25,11 +25,9 @@ workshop-2026-xai/
 ├── LICENSE                           # CC BY-NC-SA 4.0 license
 ├── Makefile                          # Build slides, PNG previews, and JSON/JS model data
 ├── README.md                         # Workshop overview
-├── branding/                         # Sciences Po Bordeaux logo and fonts
-├── template/
-│   └── iep-slides.typ                # Minimalist Typst slide template
+├── .github/workflows/pages.yml       # Automatic GitHub Pages deployment for app/
 ├── slides/
-│   └── xai-workshop.typ              # 16-slide deck (monochrome + IEP red)
+│   └── xai-workshop.typ              # 16-slide deck built with @preview/typslides:1.3.0 (Fira Sans)
 ├── data/
 │   ├── prepare_anes2024.py           # Data prep, OLS (2 & 7 params), MLP (329 weights), seed=5 jittered sample
 │   └── anes2024_clean.csv            # Cleaned ANES 2024 subset (N = 4 734, English lowercase_underscore columns)

@@ -166,6 +166,11 @@
     el.probeBars = document.getElementById("probe-bars");
     el.probeCallout = document.getElementById("probe-callout");
     el.probeProxyCallout = document.getElementById("probe-proxy-callout");
+
+    el.btnQrOpen = document.getElementById("btn-qr-open");
+    el.qrModal = document.getElementById("qr-modal");
+    el.btnQrClose = document.getElementById("btn-qr-close");
+    el.btnQrCloseFooter = document.getElementById("btn-qr-close-footer");
   }
 
   function fmt(num, decimals) {
@@ -601,8 +606,12 @@
 
     el.valB0.textContent = fmtIncome(b0, 0);
     el.valB1.textContent = fmtSignedIncome(b1, 0);
-    el.sliderB0.value = String(clamp(b0, -250000, 100000));
-    el.sliderB1.value = String(clamp(b1, -5000, 25000));
+    if (document.activeElement !== el.sliderB0) {
+      el.sliderB0.value = String(clamp(b0, -250000, 100000));
+    }
+    if (document.activeElement !== el.sliderB1) {
+      el.sliderB1.value = String(clamp(b1, -5000, 25000));
+    }
 
     var signStr = b1 >= 0 ? "+ " + fmt(b1, 0) : "- " + fmt(Math.abs(b1), 0);
     el.tab1EqLive.textContent = "ŷ = " + fmt(b0, 0) + " " + signStr + " × education";
@@ -1904,23 +1913,27 @@
 
     el.scatterSvg.addEventListener("click", handleScatterClick);
 
-    el.sliderB0.addEventListener("input", function (e) {
+    function onSliderB0(e) {
       if (state.olsAnimId) {
         cancelAnimationFrame(state.olsAnimId);
         state.olsAnimId = null;
       }
       state.b0 = parseFloat(e.target.value);
       updateTab1();
-    });
+    }
+    el.sliderB0.addEventListener("input", onSliderB0);
+    el.sliderB0.addEventListener("change", onSliderB0);
 
-    el.sliderB1.addEventListener("input", function (e) {
+    function onSliderB1(e) {
       if (state.olsAnimId) {
         cancelAnimationFrame(state.olsAnimId);
         state.olsAnimId = null;
       }
       state.b1 = parseFloat(e.target.value);
       updateTab1();
-    });
+    }
+    el.sliderB1.addEventListener("input", onSliderB1);
+    el.sliderB1.addEventListener("change", onSliderB1);
 
     el.toggleResiduals.addEventListener("change", function (e) {
       state.showResiduals = Boolean(e.target.checked);
@@ -1977,6 +1990,44 @@
       state.probeOpen = true;
       renderProbeResults();
     });
+
+    function openQrModal() {
+      if (!el.qrModal) return;
+      el.qrModal.hidden = false;
+      document.body.style.overflow = "hidden";
+      if (el.btnQrClose) {
+        el.btnQrClose.focus();
+      }
+    }
+
+    function closeQrModal() {
+      if (!el.qrModal || el.qrModal.hidden) return;
+      el.qrModal.hidden = true;
+      document.body.style.overflow = "";
+      if (el.btnQrOpen) {
+        el.btnQrOpen.focus();
+      }
+    }
+
+    if (el.btnQrOpen && el.qrModal) {
+      el.btnQrOpen.addEventListener("click", openQrModal);
+      if (el.btnQrClose) {
+        el.btnQrClose.addEventListener("click", closeQrModal);
+      }
+      if (el.btnQrCloseFooter) {
+        el.btnQrCloseFooter.addEventListener("click", closeQrModal);
+      }
+      el.qrModal.addEventListener("click", function (ev) {
+        if (ev.target === el.qrModal) {
+          closeQrModal();
+        }
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && !el.qrModal.hidden) {
+          closeQrModal();
+        }
+      });
+    }
   }
 
   function initApp(data) {
