@@ -126,8 +126,8 @@
             <article class="card concept-card">
               <h2 class="concept-title"><span class="concept-index">03 ·</span> IA Explicable (XAI)</h2>
               <span class="concept-sub">Ouvrir la boîte</span>
-              <p class="concept-body">
-                Dans une boîte transparente, chaque règle est directement lisible et nous permet d'auditer ses biais (femme, minorité, ...).
+                <p class="concept-body">
+                Dans une boîte transparente, chaque règle est directement lisible et nous permet d'auditer ses biais (<code>female</code>, <code>minority</code>, ...).
               </p>
               <p class="concept-body">
                 Quand le modèle devient une boîte noire, il devient beaucoup plus compliqué d'exposer concrètement ses biais (ex. justice prédictive COMPAS, tri automatique de CV ou scoring bancaire).
@@ -200,7 +200,7 @@
               <h2 class="card-title">Régler la droite</h2>
               <p class="card-desc">
                 Ajustez le point de départ et la pente :
-                <code>ŷ = β₀ + β₁ · etudes</code>
+                <code>ŷ = β₀ + β₁ · education</code>
               </p>
 
               <div class="slider-group">
@@ -223,7 +223,7 @@
 
               <div class="live-equation-box">
                 <span class="eq-kicker">Votre droite</span>
-                <div id="tab1-eq-live" class="eq-mono">ŷ = 0 + 6 000 × etudes</div>
+                <div id="tab1-eq-live" class="eq-mono">ŷ = 0 + 6 000 × education</div>
               </div>
 
               <div class="btn-row-tab1">
@@ -250,7 +250,7 @@
                 </div>
                 <div class="metric-right">
                   <span id="tab1-rmse-ols-label" class="metric-label">Optimum OLS (100 pts)</span>
-                  <strong id="tab1-rmse-ols" class="metric-ref">70 237 $ / an</strong>
+                  <strong id="tab1-rmse-ols" class="metric-ref">70 283 $ / an</strong>
                 </div>
               </div>
 
@@ -266,13 +266,13 @@
 
               <div id="tab1-ols-reveal" class="ols-reveal" hidden>
                 <div class="ols-reveal-badges">
-                  <span id="tab1-badge-r2" class="badge badge-indigo">R² = 0,22 (22,4 % expliqué)</span>
-                  <span id="tab1-badge-rmse" class="badge badge-teal">RMSE optimal = 70 237 $ / an</span>
+                  <span id="tab1-badge-r2" class="badge badge-indigo">R² = 0,18 (18,4 % expliqué)</span>
+                  <span id="tab1-badge-rmse" class="badge badge-teal">RMSE optimal = 70 283 $ / an</span>
                 </div>
                 <p id="tab1-ols-interpretation" class="ols-interpretation"></p>
                 <div class="code-snippet">
                   <span class="code-label">Équivalent Python (statsmodels)</span>
-                  <code>smf.ols("revenu_annuel ~ etudes", data=df).fit()</code>
+                  <code>smf.ols("annual_income ~ education", data=df).fit()</code>
                 </div>
               </div>
             </div>
@@ -439,7 +439,7 @@
               <div id="tab3-glass-eq" class="equation-tokens"></div>
               <div class="code-snippet">
                 <span class="code-label">Code Python complet (7 paramètres)</span>
-                <code>smf.ols("revenu_annuel ~ etudes + age + en_emploi + marie + femme + minorite", data=df).fit()</code>
+                <code>smf.ols("annual_income ~ education + age + employed + married + female + minority", data=df).fit()</code>
               </div>
             </div>
 
@@ -508,7 +508,7 @@
               <div class="complexity-ladder">
                 <div class="ladder-step">
                   <strong>2 paramètres</strong>
-                  <span>revenu_annuel ~ etudes (1 levier)</span>
+                  <span>annual_income ~ education (1 levier)</span>
                 </div>
                 <div class="ladder-arrow" aria-hidden="true">→</div>
                 <div class="ladder-step">
@@ -591,7 +591,7 @@
               <span class="concept-num">Étape 3</span>
               <h3 class="concept-title">Tester les 2 défis</h3>
               <p class="concept-body">
-                Auditez les biais (<code>femme</code>, <code>minorite</code>), puis comparez avec l'Onglet 4 (Deep Learning).
+                Auditez les biais (<code>female</code>, <code>minority</code>), puis comparez avec l'Onglet 4 (Deep Learning).
               </p>
             </article>
           </div>
@@ -602,6 +602,13 @@
     <footer class="site-footer">
       <div class="footer-inner">
         <span class="license-note">
+          <a
+            class="footer-link"
+            href="https://github.com/mickaeltemporao"
+            target="_blank"
+            rel="noopener noreferrer"
+          >&copy; 2026 Mickael Temporão</a>
+          ·
           <a
             class="footer-link"
             href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr"

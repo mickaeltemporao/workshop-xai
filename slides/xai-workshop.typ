@@ -48,7 +48,7 @@
 // ============================================================================
 
 #title-slide(
-  lecture-num: "Atelier",
+  lecture-num: "Workshop",
   course-name: "IA Explicable (XAI)",
   title: "De la régression aux grands modèles de langage",
   author: "Mickael Temporão",
@@ -91,7 +91,7 @@
   #callout-strip(
     "Fil rouge",
     [
-      Des #strong[données réelles d'enquête (`ANES 2024`, `N = 4 734` répondant·es, USA 2024)] : prédire le #strong[revenu annuel du foyer] (`revenu_annuel`, `$ / an`), visualiser tous les résidus sur #strong[`100` points cliquables], et mener un #strong[double audit de biais] (`femme` et `minorite`).
+      Des #strong[données réelles d'enquête (`ANES 2024`, `N = 4 734` répondant·es, USA 2024)] : prédire le #strong[revenu annuel du foyer] (`annual_income`, `$ / an`), visualiser tous les résidus sur #strong[`100` points cliquables], et mener un #strong[double audit de biais] (`female` et `minority`).
     ],
     accent: iep-red,
   )
@@ -141,7 +141,7 @@
         inset: (x: 14pt, y: 10pt),
         [
           #text(font: font-heading, size: 13.5pt, style: "italic", fill: iep-anthracite)[
-            « Tous les modèles sont faux, mais certains sont utiles. »
+            « All models are wrong, but some are useful. »
           ]
           #v(4pt)
           #align(right, text(size: 11pt, weight: "bold", fill: iep-red)[
@@ -354,7 +354,7 @@
 // ============================================================================
 
 #slide(
-  category: "Régression simple (2 paramètres)",
+  category: "Faire des études rapporte-t-il vraiment ? (2 paramètres)",
   title: "Un modèle « boîte de verre » : Y ~ X",
 )[
   #two-col(
@@ -365,8 +365,8 @@
         #cetz.canvas(length: 1.0cm, {
           import cetz.draw: *
 
-          // Cadre du graphique : x de 7.5 a 20.5 ans -> [0, 7.28], y de 0 a 250 k$/an -> [0, 5.0]
-          let map-x(ed) = (ed - 7.5) * 0.56
+          // Cadre du graphique : x de 0 a 20.5 ans -> [0, 7.38], y de 0 a 250 k$/an -> [0, 5.0]
+          let map-x(ed) = ed * 0.36
           let map-y(rev) = rev * 0.02
 
           // Grille legere horizontale
@@ -380,13 +380,13 @@
           line((0, 0), (7.4, 0), stroke: 1pt + iep-anthracite)
           line((0, 0), (0, 5.3), stroke: 1pt + iep-anthracite)
 
-          // Graduations X
-          for ed in (8, 12, 16, 20) {
+          // Graduations X de 0 a 20 par pas de 2 ans
+          for ed in (0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20) {
             line((map-x(ed), 0), (map-x(ed), -0.1), stroke: 0.8pt + iep-anthracite)
-            content((map-x(ed), -0.35), text(size: 8.5pt, fill: iep-gray)[#ed])
+            content((map-x(ed), -0.35), text(size: 8pt, fill: iep-gray)[#ed])
           }
 
-          // Points realistes ANES 2024 autour de y = -100.4 + 13.445 * etudes (sans chevauchement avec le triangle)
+          // Points realistes ANES 2024 autour de y = -100.4 + 13.445 * education
           let pts = (
             (8.0, 14.0), (8.0, 32.0), (8.5, 48.0), (9.0, 22.0), (9.0, 65.0),
             (10.0, 78.0), (10.5, 92.0), (11.0, 12.0), (11.5, 112.0),
@@ -401,24 +401,24 @@
             circle((map-x(rx), map-y(ry)), radius: 0.08, fill: rgb("#cbd5e1"), stroke: 0.6pt + iep-gray)
           }
 
-          // Droite OLS : y(8) = 7.16, y(20) = 168.50
-          line((map-x(8.0), map-y(7.16)), (map-x(20.0), map-y(168.50)), stroke: 2.3pt + iep-red)
+          // Droite OLS : y = 0 a education = 7.47 -> y(20) = 168.50
+          line((map-x(7.47), map-y(0.0)), (map-x(20.0), map-y(168.50)), stroke: 2.3pt + iep-red)
 
-          // Triangle de pente (+4 ans -> +53.8 k$) de x=10 a x=14
-          let x1 = 10.0
-          let x2 = 14.0
+          // Triangle de pente (+4 ans -> +53.8 k$) de x=12 a x=16
+          let x1 = 12.0
+          let x2 = 16.0
           let y1 = -100.399 + 13.445 * x1
           let y2 = -100.399 + 13.445 * x2
           line((map-x(x1), map-y(y1)), (map-x(x2), map-y(y1)), stroke: (paint: iep-anthracite, thickness: 1.1pt, dash: "dashed"))
           line((map-x(x2), map-y(y1)), (map-x(x2), map-y(y2)), stroke: (paint: iep-red, thickness: 1.6pt))
-          content((map-x(12.0), map-y(y1) - 0.34), text(size: 8.5pt, weight: "bold", fill: iep-anthracite)[+4 ans])
-          content((map-x(x2) + 0.88, map-y((y1 + y2) / 2) - 0.02), text(size: 8.5pt, weight: "bold", fill: iep-red)[+53.8 k\$])
+          content((map-x(14.0), map-y(y1) - 0.34), text(size: 8.5pt, weight: "bold", fill: iep-anthracite)[+4 ans])
+          content((map-x(x2) + 0.78, map-y((y1 + y2) / 2) - 0.02), text(size: 8.5pt, weight: "bold", fill: iep-red)[+53.8 k\$])
 
           // Etiquette droite
-          content((map-x(11.6), map-y(228.0)), text(size: 9.2pt, weight: "bold", fill: iep-red)[ŷ = -100.4 + 13.4 × etudes (k\$)])
+          content((map-x(9.5), map-y(228.0)), text(size: 9pt, weight: "bold", fill: iep-red)[ŷ = -100.4 + 13.4 × education (k\$)])
 
           // Titres axes
-          content((3.7, -0.82), text(size: 9.5pt, weight: "bold", fill: iep-anthracite)[Années d'études (8 à 20 ans)])
+          content((3.7, -0.82), text(size: 9.5pt, weight: "bold", fill: iep-anthracite)[Années d'études (education, 0 à 20 ans)])
           content((1.15, 5.65), text(size: 9.5pt, weight: "bold", fill: iep-anthracite)[Revenu annuel (k\$ / an)])
         })
       ]
@@ -433,7 +433,7 @@
           #text(size: 9pt, weight: "bold", fill: rgb("#adb5bd"))[CODE PYTHON (OLS : MOINDRES CARRÉS)]
           #v(4pt)
           #text(size: 9.5pt, fill: white)[
-            #raw("smf.ols(\"revenu_annuel ~ etudes\", data=df).fit()")
+            #raw("smf.ols(\"annual_income ~ education\", data=df).fit()")
           ]
         ],
       )
@@ -443,8 +443,8 @@
       ]
       #v(6pt)
       #set text(size: 11.5pt)
-      - #strong[Constante (`β0`) = `-100 399 $`] : niveau théorique à `etudes = 0` (extrapolation hors échantillon).
-      - #strong[Pente `etudes` (`β1`) = #text(fill: iep-red)[`+13 445 $ / an`]] par année d'études : soit #strong[`+53 780 $`] (`+53.8 k$`) pour `+4` ans d'études (`p < 0.001`).
+      - #strong[Constante (`β0`) = `-100 399 $`] : niveau théorique à `education = 0` (extrapolation hors échantillon).
+      - #strong[Pente `education` (`β1`) = #text(fill: iep-red)[`+13 445 $ / an`]] par année d'études : soit #strong[`+53 780 $`] (`+53.8 k$`) pour `+4` ans d'études (`p < 0.001`).
 
       #v(16pt)
       #line(length: 100%, stroke: 0.6pt + iep-border)
@@ -456,7 +456,7 @@
         [
           #text(font: font-heading, size: 22pt, weight: "bold", fill: iep-anthracite)[0.18] \
           #text(size: 10.5pt, weight: "bold", fill: iep-anthracite)[Part expliquée (`R²`)] \
-          #text(size: 9.5pt, fill: iep-gray)[Variance captée par `etudes`]
+          #text(size: 9.5pt, fill: iep-gray)[Variance captée par `education`]
         ],
         [
           #text(font: font-heading, size: 20pt, weight: "bold", fill: iep-red)[70 289 \$ / an] \
@@ -482,7 +482,7 @@
     align: horizon,
     block(fill: iep-dark-bg, radius: 3pt, inset: (x: 11pt, y: 6.5pt), width: 100%)[
       #text(size: 8.2pt, fill: white)[
-        #raw("smf.ols(\"revenu_annuel ~ etudes + age + en_emploi + marie + femme + minorite\", data=df).fit()")
+        #raw("smf.ols(\"annual_income ~ education + age + employed + married + female + minority\", data=df).fit()")
       ]
     ],
     [
@@ -514,12 +514,12 @@
     text(weight: "bold", fill: iep-anthracite)[Interprétation et audit de biais],
 
     [#strong[Constante (`β0`)]], [Point de départ], [#strong[`-87 268 $`]], [Niveau de référence théorique avant ajout des leviers],
-    [#strong[`etudes`]], [`6` à `20` ans (`14.7`)], [#text(weight: "bold", fill: iep-anthracite)[`+10 998 $ / an`]], [Rendement de chaque année d'études (`p < 0.001`)],
+    [#strong[`education`]], [`6` à `20` ans (`14.7`)], [#text(weight: "bold", fill: iep-anthracite)[`+10 998 $ / an`]], [Rendement de chaque année d'études (`p < 0.001`)],
     [#strong[`age`]], [`18` à `80` ans (`52.7`)], [#text(weight: "bold", fill: iep-anthracite)[`-227 $ / an`]], [Pente linéaire moyenne sur l'âge adulte (`p < 0.001`)],
-    [#strong[`en_emploi`]], [`0 / 1` (`68.8 %`)], [#text(weight: "bold", fill: iep-anthracite)[`+24 855 $ / an`]], [Prime liée à l'exercice d'un emploi (`p < 0.001`)],
-    [#strong[`marie`]], [`0 / 1` (`51.6 %`)], [#text(weight: "bold", fill: iep-anthracite)[`+48 093 $ / an`]], [Effet foyer à deux revenus et statut marital (`p < 0.001`)],
-    [#strong(text(fill: iep-red)[`femme`]) #text(size: 8.6pt, weight: "bold", fill: iep-red)[(Protégé : sexe)]], [`0 / 1` (`53.2 %`)], [#text(weight: "bold", fill: iep-red)[`-8 007 $ / an`]], [#text(fill: iep-red)[Écart significatif à profil égal (`p < 0.001`) : signal d'alerte]],
-    [#strong(text(fill: iep-red)[`minorite`]) #text(size: 8.6pt, weight: "bold", fill: iep-red)[(Protégé : origine)]], [`0 / 1` (`27.5 %`)], [#text(weight: "bold", fill: iep-red)[`-10 328 $ / an`]], [#text(fill: iep-red)[Écart significatif à profil égal (`p < 0.001`) : signal d'alerte]],
+    [#strong[`employed`]], [`0 / 1` (`68.8 %`)], [#text(weight: "bold", fill: iep-anthracite)[`+24 855 $ / an`]], [Prime liée à l'exercice d'un emploi (`p < 0.001`)],
+    [#strong[`married`]], [`0 / 1` (`51.6 %`)], [#text(weight: "bold", fill: iep-anthracite)[`+48 093 $ / an`]], [Effet foyer à deux revenus et statut marital (`p < 0.001`)],
+    [#strong(text(fill: iep-red)[`female`]) #text(size: 8.6pt, weight: "bold", fill: iep-red)[(Sexe)]], [`0 / 1` (`53.2 %`)], [#text(weight: "bold", fill: iep-red)[`-8 007 $ / an`]], [#text(fill: iep-red)[Écart significatif à profil égal (`p < 0.001`) : signal d'alerte]],
+    [#strong(text(fill: iep-red)[`minority`]) #text(size: 8.6pt, weight: "bold", fill: iep-red)[(Origine)]], [`0 / 1` (`27.5 %`)], [#text(weight: "bold", fill: iep-red)[`-10 328 $ / an`]], [#text(fill: iep-red)[Écart significatif à profil égal (`p < 0.001`) : signal d'alerte]],
   )
 
   #v(8pt)
@@ -530,7 +530,7 @@
     inset: (left: 12pt, y: 2pt),
     [
       #text(size: 10.4pt, fill: iep-anthracite)[
-        #strong[Audit de biais :] à diplôme, âge, emploi et situation familiale identiques, les deux attributs protégés restent hautement significatifs (`femme` : #strong(text(fill: iep-red)[-8 007 \$]), `minorite` : #strong(text(fill: iep-red)[-10 328 \$]), `p < 0.001`). Dans un scoring équitable (crédit, RH), sexe et origine doivent être audités et neutralisés.
+        #strong[Audit de biais :] à diplôme, âge, emploi et situation familiale identiques, les deux critères sociaux restent hautement significatifs (`female` : #strong(text(fill: iep-red)[-8 007 \$]), `minority` : #strong(text(fill: iep-red)[-10 328 \$]), `p < 0.001`). Dans un scoring équitable (crédit, RH), sexe et origine doivent être audités et neutralisés.
       ]
     ],
   )
@@ -564,7 +564,7 @@
       ]
       #v(8pt)
       #set text(size: 11.2pt)
-      - Observer `Y ~ X` sur #strong[100 points réels `ANES 2024`] (`-128.8 k$ + 15.2 k$ × etudes`, `RMSE = 70 237 $`, axe de `0` à `20` ans) avec #strong[résidus sur tous les points].
+      - Partir d'une droite en `(0, 0)` sur #strong[100 points réels] (`seed = 5`, `1` profil `< 10` ans, axe `0` à `20`), puis ajuster l'OLS (`-99.9 k$ + 13.6 k$ × education`, `RMSE = 70 283 $`).
       - #strong[Cliquer] pour ajouter un profil extrême et voir la droite basculer en direct.
     ],
     [
@@ -583,7 +583,7 @@
       ]
       #v(8pt)
       #set text(size: 11.2pt)
-      - Régler les #strong[6 leviers] (dont les attributs protégés `femme` et `minorite`) pour construire un profil de foyer.
+      - Régler les #strong[6 leviers] (dont `female` et `minority`, `p < 0.001`) pour construire un profil de foyer.
       - Lire chaque contribution en #strong[`$ / an`] autour de la moyenne (`97 347 $ / an`) qui forme le revenu prédit.
     ],
     [
@@ -642,12 +642,12 @@
           node((4, -0.65), text(size: 8pt, weight: "bold", fill: iep-red)[SORTIE (1)], stroke: none, fill: none),
 
           // Etiquettes des 6 variables ANES 2024 (colonne 0)
-          node((0, 0.0), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[etudes]], stroke: none, fill: none),
+          node((0, 0.0), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[education]], stroke: none, fill: none),
           node((0, 0.78), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[age]], stroke: none, fill: none),
-          node((0, 1.56), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[en_emploi]], stroke: none, fill: none),
-          node((0, 2.34), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[marie]], stroke: none, fill: none),
-          node((0, 3.12), align(right)[#text(size: 8pt, weight: "bold", fill: iep-red)[femme]], stroke: none, fill: none),
-          node((0, 3.90), align(right)[#text(size: 8pt, weight: "bold", fill: iep-red)[minorite]], stroke: none, fill: none),
+          node((0, 1.56), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[employed]], stroke: none, fill: none),
+          node((0, 2.34), align(right)[#text(size: 8pt, weight: "bold", fill: iep-anthracite)[married]], stroke: none, fill: none),
+          node((0, 3.12), align(right)[#text(size: 8pt, weight: "bold", fill: iep-red)[female]], stroke: none, fill: none),
+          node((0, 3.90), align(right)[#text(size: 8pt, weight: "bold", fill: iep-red)[minority]], stroke: none, fill: none),
 
           // Couche entree (colonne 1)
           for i in range(6) {
@@ -726,7 +726,7 @@
       ]
       #v(5pt)
       #set text(size: 11.2pt)
-      Chaque entrée irrigue les #strong[16] puis #strong[12 neurones] : aucun poids isolé ne donne un effet clair. Même sans `femme` ou `minorite`, `etudes`, `marie` et `en_emploi` en portent la trace indirecte.
+      Chaque entrée irrigue les #strong[16] puis #strong[12 neurones] : aucun poids isolé ne donne un effet clair. Même sans `female` ou `minority`, `education`, `married` et `employed` en portent la trace indirecte.
 
       #v(14pt)
 
@@ -885,7 +885,7 @@
   #callout-strip(
     "Vigilance & AI Act",
     [
-      Une explication post-hoc (SHAP, LIME) est une #strong[approximation locale] qui ne prouve #strong[jamais une causalité]. Sur de vraies données d'enquête (`ANES 2024`) comme dans les systèmes à haut risque (crédit, recrutement, #strong[AI Act européen]), l'XAI sert à auditer les biais (`femme`, `minorite`) et leurs #strong[variables proxy].
+      Une explication post-hoc (SHAP, LIME) est une #strong[approximation locale] qui ne prouve #strong[jamais une causalité]. Sur de vraies données d'enquête (`ANES 2024`) comme dans les systèmes à haut risque (COMPAS, crédit, recrutement, #strong[AI Act européen]), l'XAI sert à auditer les biais (`female`, `minority`) et leurs #strong[variables proxy].
     ],
     accent: iep-red,
   )
@@ -925,7 +925,7 @@
       #v(8pt)
       #set text(size: 11pt)
       - Sur l'#strong[Onglet 2] (`Une droite`, `100` points réels `ANES 2024`), cochez #emph[Afficher les erreurs], puis ajoutez un point extrême au clic.
-      - Testez `femme` et `minorite` sur les #strong[Onglets 3 et 4] (`7` vs `329` paramètres).
+      - Testez `female` et `minority` sur les #strong[Onglets 3 et 4] (`7` vs `329` paramètres).
     ],
     [
       #line(length: 100%, stroke: 1.5pt + iep-anthracite)
@@ -938,7 +938,7 @@
       #v(8pt)
       #set text(size: 11pt)
       - Depuis l'#strong[Onglet 5] (`Hack-time`), ouvrez le #link("https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb")[#strong(text(fill: iep-red)[notebook Google Colab])] (dépôt #link("https://github.com/mickaeltemporao/workshop-xai")[GitHub]).
-      - Chargez `ANES 2024` et retrouvez `R² = 0.31`, `femme` (`-8 007 $`) et `minorite` (`-10 328 $`).
+      - Chargez `ANES 2024` et retrouvez `R² = 0.31`, `female` (`-8 007 $`) et `minority` (`-10 328 $`).
     ],
     [
       #line(length: 100%, stroke: 1.5pt + iep-red)
@@ -950,7 +950,7 @@
       ]
       #v(8pt)
       #set text(size: 11pt)
-      - Basculez un attribut protégé (`femme`, `minorite`) puis variez une variable $X_i$ à la fois.
+      - Basculez `female` ou `minority` puis variez une variable $X_i$ à la fois.
       - Confrontez boîte de verre (`7` params) et boîte noire (`329` params) sur des profils contrastés.
     ],
   )
@@ -967,7 +967,7 @@
 
   #v(10pt)
   #align(left, text(size: 8.8pt, fill: iep-gray)[
-    Note IA : supports et code conçus avec l'assistance d'outils d'IA générative, relus et validés par l'intervenant.
+    Licence CC BY-NC-SA 4.0 | Note IA : supports et code conçus avec l'assistance d'outils d'IA générative, relus et validés par l'intervenant.
   ])
 ]
 

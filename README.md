@@ -1,120 +1,77 @@
-# Workshop IA Explicable (XAI) - De la régression aux grands modèles de langage
+# Explainable AI (XAI) Workshop
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb)
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-Support complet pour une séance de **35 à 40 minutes** en français destinée à des chercheur·ses et étudiant·es en sciences sociales ayant peu ou pas de bagage en programmation Python :
+Teaching materials (in French) for a **35 to 40 minute** introductory workshop on Explainable AI (XAI) designed for social science researchers and students with little or no Python background.
 
-- **Présentation (15 à 20 min)** : diaporama Typst ([slides/xai-workshop.typ](slides/xai-workshop.typ)) sur les notions de modèle (heuristique), d'algorithme (recette), d'apprentissage supervisé / non supervisé, de régression « boîte de verre » (`revenu_annuel ~ etudes`, `2` puis `7` paramètres) sur de **vraies données d'enquête (`ANES 2024`, `N = 4 734`)**, audit de biais sur **deux attributs protégés (`femme` et `minorite`, `p < 0,001`)**, jusqu'au deep learning (`329` paramètres) et aux grands modèles de langage (`70 Md à 1 000+ Md` de paramètres).
-- **Application interactive (démo + prise en main)** : **Workshop IA Explicable (XAI)** ([app/index.html](app/index.html)), une application statique HTML/CSS/JS sans dépendance CDN externe, prête pour **Vercel** et fonctionnelle hors ligne (`file://`), organisée en **5 onglets pleine largeur** :
-  1. **`Introduction`** : citation de George E. P. Box (*« Tous les modèles sont faux, mais certains sont utiles. »*), trois repères clés (**Modèle** = heuristique, **Algorithme** = recette, **IA Explicable** = ouvrir la boîte) et lancement de l'atelier.
-  2. **`Une droite`** : `100` points réels `ANES 2024` avec léger jitter visuel (axe X gradué de `0` à `20` ans par pas de `2` ans), ajout de points au clic et résidus affichés sur 100 % des points.
-  3. **`Des paramètres`** : régression OLS à `7` paramètres, double audit de biais (`femme`, `minorite`) et comparaison contrefactuelle `Profil A`.
-  4. **`Deep Learning`** : comparaison boîte de verre (`7` params) vs boîte noire (`329` params) avec schéma SVG interactif du réseau de neurones (`6 → 16 → 12 → 1`) et sonde XAI locale.
-  5. **`Hack-time`** : accès direct au notebook Google Colab et au dépôt GitHub ([github.com/mickaeltemporao/workshop-xai](https://github.com/mickaeltemporao/workshop-xai)).
-- **Atelier pratique Google Colab (15 à 20 min)** : notebook guidé ([notebooks/atelier-xai-citoyen.ipynb](notebooks/atelier-xai-citoyen.ipynb)) chargeant directement `ANES 2024` avec `statsmodels` (`smf.ols`) et des curseurs interactifs pour auditer l'effet de chaque levier et des attributs protégés.
+## What is included
+
+- **Typst Slides (`15-20 min`)**: [slides/xai-workshop.typ](slides/xai-workshop.typ) (compiled PDF in [build/slides-xai.pdf](build/slides-xai.pdf)) covering models as heuristics, algorithms as recipes, glass-box regressions (`annual_income ~ education`, `2` and `7` parameters) vs. neural networks (`329` parameters) and LLMs, bias auditing (`female`, `minority`), and local XAI probes.
+- **Interactive Web App**: [app/index.html](app/index.html) is a zero-dependency static HTML/CSS/JS app (Vercel-ready and offline `file://` compatible) organized in **5 full-width tabs**:
+  1. **`Introduction`**: George Box's quote and core intuition (model, algorithm, XAI).
+  2. **`Une droite`**: fit a line starting at `(0, 0)` over `100` real respondents (`seed = 5`, including `1` point at `education = 8`), toggle residuals on all points, or click to add points.
+  3. **`Des paramètres`**: `7`-parameter OLS model with `p < 0.001 ***` significance tags and `Profil A` counterfactual comparison.
+  4. **`Deep Learning`**: compare the `7`-parameter glass box to a `329`-parameter interactive SVG neural network (`6 -> 16 -> 12 -> 1`) using local perturbation probes (including the COMPAS proxy example).
+  5. **`Hack-time`**: direct links to launch the Google Colab notebook.
+- **Google Colab Notebook (`15-20 min`)**: [notebooks/atelier-xai-citoyen.ipynb](notebooks/atelier-xai-citoyen.ipynb) loads ANES 2024 directly with `statsmodels` (`smf.ols`) and interactive form sliders. No local installation required.
 
 ---
 
-## Structure du dépôt
+## Repository structure
 
 ```text
 workshop-2026-xai/
-├── LICENSE                           # Licence Creative Commons CC BY-NC-SA 4.0
-├── Makefile                          # Compilation Typst, prévisualisations PNG et préparation ANES 2024
-├── README.md                         # Documentation, note IA et accès direct Google Colab
-├── branding/                         # Charte graphique Sciences Po Bordeaux (logo + polices Bitter / Myriad Pro)
+├── LICENSE                           # CC BY-NC-SA 4.0 license
+├── Makefile                          # Build slides, PNG previews, and JSON/JS model data
+├── README.md                         # Workshop overview
+├── branding/                         # Sciences Po Bordeaux logo and fonts
 ├── template/
-│   └── iep-slides.typ                # Gabarit Typst minimaliste localisé en français
+│   └── iep-slides.typ                # Minimalist Typst slide template
 ├── slides/
-│   └── xai-workshop.typ              # Diaporama épuré (16 diapositives, blanc/gris + rouge IEP)
+│   └── xai-workshop.typ              # 16-slide deck (monochrome + IEP red)
 ├── data/
-│   ├── prepare_anes2024.py           # Source unique : prépare ANES 2024, OLS (2 & 7 params), MLP (329 poids), 100 pts avec jitter
-│   └── anes2024_clean.csv            # Jeu nettoyé issu d'ANES 2024 (N = 4 734 répondant·es, 7 colonnes)
+│   ├── prepare_anes2024.py           # Data prep, OLS (2 & 7 params), MLP (329 weights), seed=5 jittered sample
+│   └── anes2024_clean.csv            # Cleaned ANES 2024 subset (N = 4 734, English lowercase_underscore columns)
 ├── app/
-│   ├── index.html                    # Application web interactive en 5 onglets
-│   ├── styles.css                    # Mise en page éditoriale responsive
-│   ├── app.js                        # Navigation 5 onglets, nuage 100 pts + clic & jitter, OLS, SVG MLP & sonde XAI
-│   ├── model-data.json               # Paramètres exportés par prepare_anes2024.py
-│   ├── model-data.js                 # Copie JS pour usage hors ligne en file:// sans serveur
-│   └── vercel.json                   # Configuration statique Vercel
+│   ├── index.html                    # 5-tab static web app
+│   ├── styles.css                    # Responsive layout
+│   ├── app.js                        # OLS/MLP math, SVG scatter & interactive neural network
+│   ├── model-data.json               # Precomputed model parameters and 100-point sample
+│   ├── model-data.js                 # Offline file:// copy
+│   └── vercel.json                   # Static Vercel config
 ├── notebooks/
-│   └── atelier-xai-citoyen.ipynb     # Notebook Google Colab (zéro installation, charge ANES 2024 en gzip)
+│   └── atelier-xai-citoyen.ipynb     # Guided Google Colab notebook
 └── build/
-    └── slides-xai.pdf                # PDF compilé des diapositives
+    └── slides-xai.pdf                # Compiled slide deck
 ```
 
 ---
 
-## 1. Compiler les diapositives (Typst)
+## Usage
 
-Depuis la racine du projet :
-
+### Build slides & regenerate data
 ```bash
-make slides
+make data      # Regenerate app/model-data.json and app/model-data.js
+make slides    # Compile build/slides-xai.pdf
+make preview   # Export PNG previews to build/previews/
 ```
 
-Le PDF est généré dans `build/slides-xai.pdf`. Pour générer aussi les aperçus PNG (`build/previews/slide-*.png`) :
+### Deploy the web app on Vercel
+Deploy `app/` directly as a static directory (**Root Directory**: `app`, empty build command, output directory `.`) or run `npx vercel --prod` inside `app/`.
 
-```bash
-make preview
-```
-
-Pour régénérer les paramètres exportés (`app/model-data.json` et `app/model-data.js`) depuis `data/anes2024_clean.csv` :
-
-```bash
-make data
-```
+### Data source (`ANES 2024`)
+Variables extracted from the **American National Election Studies (ANES) 2024 Time Series Study** (`N = 4 734`): `education`, `age`, `employed`, `married`, `female`, `minority`, and `annual_income` (`$ US / year`, bracket midpoints). The `100`-point scatter sample uses `SCATTER_SAMPLE_SEED = 5` (includes `1` respondent below `10` years of schooling at `education = 8`).
 
 ---
 
-## 2. Déployer l'application interactive sur Vercel
+## AI Disclaimer
 
-Le dossier `app/` est 100 % statique (aucun build requis, zéro dépendance CDN pour l'exécution).
-
-### Option A : via la CLI Vercel
-```bash
-cd app
-npx vercel --prod
-```
-
-### Option B : via GitHub + Vercel
-1. Poussez ce dépôt sur GitHub (`https://github.com/mickaeltemporao/workshop-xai`).
-2. Sur Vercel (`New Project`), importez le dépôt et définissez **Root Directory** sur `app`.
-3. Laissez **Build Command** vide et **Output Directory** sur `.`.
-
-### Usage hors ligne (sans connexion Internet)
-Ouvrez directement `app/index.html` dans n'importe quel navigateur : les `100` points réels avec jitter, les coefficients OLS et les `329` poids du réseau de neurones sont déjà embarqués dans `app/model-data.js`.
+Parts of this project (web application code, pedagogical notebook, and slide materials) were created with the assistance of generative AI tools. All code, statistical analyses on `ANES 2024`, equations, and explanations were reviewed and validated under the responsibility of the author.
 
 ---
 
-## 3. Lancer le notebook Google Colab
+## License
 
-Ouvrez directement le notebook dans Google Colab (aucune installation locale requise) :
-
-- **Lien direct Colab :** `https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb`
-- **Dépôt GitHub :** `https://github.com/mickaeltemporao/workshop-xai`
-
-Tous les paquets utilisés (`numpy`, `pandas`, `statsmodels`, `matplotlib`) sont préinstallés sur Colab : aucune commande `!pip install` n'est nécessaire. Le chargement lit directement `https://raw.githubusercontent.com/datamisc/ts-2024/main/data.csv` avec `compression="gzip"`.
-
----
-
-## Source des données et repères statistiques (`ANES 2024`)
-
-Les données proviennent de l'enquête **American National Election Studies (ANES) 2024 Time Series Study** (`https://raw.githubusercontent.com/datamisc/ts-2024/main/data.csv`, `N = 4 734` répondant·es valides). Variable cible : `revenu_annuel` (revenu annuel du foyer en `$ US / an`, issu des 28 tranches `V241566x` converties aux centres officiels de `2 500 $` à `275 000 $` ; moyenne `97 347 $ / an`, médiane `77 500 $ / an`).
-
-- **Régression simple (`revenu_annuel ~ etudes`, `2` paramètres)** : `Intercept = -100 399 $`, pente `etudes = +13 445 $ / an` par année d'études, `R² = 0,18`, `RMSE = 70 289 $ / an` sur `N = 4 734` (`100` points réels affichés dans l'onglet `Une droite` avec jitter esthétique, axe X de `0` à `20` ans par pas de `2` ans, résidus sur 100 % des points et ajout interactif au clic : `Intercept = -128 760 $`, pente `+15 248 $ / an`, `R² = 0,22`, `RMSE = 70 237 $ / an`).
-- **Régression multiple (`7` paramètres)** : `etudes (+10 998 $/an)`, `age (-227 $/an)`, `en_emploi (+24 855 $/an)`, `marie (+48 093 $/an)`, et **deux attributs protégés hautement significatifs (`p < 0,001`)** : **`femme (-8 007 $/an)`** et **`minorite (-10 328 $/an)`** ; `R² = 0,31`, `RMSE = 64 267 $ / an`.
-- **Deep learning (`6 → 16 → 12 → 1`, `329` paramètres)** : `R² = 0,34`, `RMSE = 62 837 $ / an`, illustrant la courbe non linéaire de l'âge (positif en début de carrière, négatif après la retraite), le risque de **variables proxy** dans la boîte noire et les obligations de l'**AI Act européen**.
-
----
-
-## Note sur l'usage de l'IA (AI Disclaimer)
-
-Certaines parties de ce projet (code de l'application interactive, notebook pédagogique et supports de présentation) ont été conçues avec l'assistance d'outils d'IA générative. L'ensemble des contenus, analyses statistiques sur `ANES 2024`, équations et explications reste sous la responsabilité éditoriale et scientifique de l'intervenant, qui a vérifié et validé chaque étape.
-
----
-
-## Licence
-
-Ce dépôt et ses supports pédagogiques sont placés sous licence **Creative Commons Attribution - Pas d'Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr))**. Voir le fichier [LICENSE](LICENSE).
+Copyright (c) 2026 [Mickael Temporão](https://github.com/mickaeltemporao).
+This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/). See [LICENSE](LICENSE).

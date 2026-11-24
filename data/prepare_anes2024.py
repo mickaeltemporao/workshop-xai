@@ -3,8 +3,8 @@
 Source: American National Election Studies (ANES) 2024 Time Series Study
 URL: https://raw.githubusercontent.com/datamisc/ts-2024/main/data.csv (gzipped CSV)
 Generates:
-  - data/anes2024_clean.csv : Cleaned 7-column subset (N = 4 734)
-  - app/model-data.json     : OLS + 329-param MLP weights + presets + 100 real scatter points
+  - data/anes2024_clean.csv : Cleaned 7-column subset (N = 4 734, English lowercase_underscore names)
+  - app/model-data.json     : OLS + 329-param MLP weights + presets + 100 real scatter points (seed = 5, 1 < 10y)
   - app/model-data.js       : window.MODEL_DATA = ... (offline file:// compatibility)
 """
 
@@ -19,17 +19,18 @@ import statsmodels.formula.api as smf
 
 
 FEATURES = [
-    "etudes",
+    "education",
     "age",
-    "en_emploi",
-    "marie",
-    "femme",
-    "minorite",
+    "employed",
+    "married",
+    "female",
+    "minority",
 ]
-TARGET = "revenu_annuel"
+TARGET = "annual_income"
 ANES_URL = "https://raw.githubusercontent.com/datamisc/ts-2024/main/data.csv"
+SCATTER_SAMPLE_SEED = 5  # Reproducible 100-row sample with exactly 1 respondent below 10 years (education = 8)
 
-# 28 tranches officielles ANES 2024 (V241566x) converties aux centres de tranches en milliers de $ / an
+# 28 official ANES 2024 income brackets (V241566x) converted to midpoints in $k / year
 MIDPOINTS_K = {
     1: 2.5, 2: 7.5,
     3: 11.25, 4: 13.75, 5: 16.25, 6: 18.75, 7: 21.25, 8: 23.75, 9: 26.25, 10: 28.75,
@@ -38,19 +39,19 @@ MIDPOINTS_K = {
     23: 105.0, 24: 117.5, 25: 137.5, 26: 162.5, 27: 212.5, 28: 275.0,
 }
 
-# Recodage du diplome ANES (V241463) en annees d'etudes equivalentes
-EDUC_YEARS = {
+# Recoding ANES education attainment (V241463) into equivalent years of schooling
+EDUCATION_YEARS = {
     1: 6, 2: 8, 3: 9, 4: 10, 5: 11, 6: 11, 7: 11, 8: 11,
     9: 12, 10: 13, 11: 14, 12: 14, 13: 16, 14: 18, 15: 19, 16: 20,
 }
 
 
 def clean_anes2024(raw_df: pd.DataFrame) -> pd.DataFrame:
-    """Filter valid respondents and build clean predictors + annual household income ($ / year)."""
+    """Filter valid respondents and build clean English lowercase_underscore predictors + annual_income."""
     sub = raw_df[
         (raw_df["V241566x"].isin(MIDPOINTS_K))
         & (raw_df["V241458x"] >= 18)
-        & (raw_df["V241463"].isin(EDUC_YEARS))
+        & (raw_df["V241463"].isin(EDUCATION_YEARS))
         & (raw_df["V241488x"] > 0)
         & (raw_df["V241461x"] > 0)
         & (raw_df["V241550"].isin([1, 2]))
@@ -59,13 +60,13 @@ def clean_anes2024(raw_df: pd.DataFrame) -> pd.DataFrame:
 
     return pd.DataFrame(
         {
-            "etudes": sub["V241463"].map(EDUC_YEARS).astype(int),
+            "education": sub["V241463"].map(EDUCATION_YEARS).astype(int),
             "age": sub["V241458x"].astype(int),
-            "en_emploi": (sub["V241488x"] == 1).astype(int),
-            "marie": (sub["V241461x"] == 1).astype(int),
-            "femme": (sub["V241550"] == 2).astype(int),
-            "minorite": (sub["V241501x"] != 1).astype(int),
-            "revenu_annuel": (sub["V241566x"].map(MIDPOINTS_K) * 1000.0).round(0),
+            "employed": (sub["V241488x"] == 1).astype(int),
+            "married": (sub["V241461x"] == 1).astype(int),
+            "female": (sub["V241550"] == 2).astype(int),
+            "minority": (sub["V241501x"] != 1).astype(int),
+            "annual_income": (sub["V241566x"].map(MIDPOINTS_K) * 1000.0).round(0),
         }
     ).reset_index(drop=True)
 
@@ -77,71 +78,71 @@ def with_jitter(df_sub: pd.DataFrame, seed: int) -> list[dict]:
     for row in df_sub.itertuples(index=False):
         jx = float(rng.uniform(-0.32, 0.32))
         jy = float(rng.uniform(-2800.0, 2800.0))
-        x_exact = int(row.etudes)
-        y_exact = round(float(row.revenu_annuel), 0)
+        x_exact = int(row.education)
+        y_exact = round(float(row.annual_income), 0)
         dx = round(float(np.clip(x_exact + jx, 0.2, 20.8)), 2)
         dy = round(float(np.clip(y_exact + jy, 2500.0, 278000.0)), 0)
         pts.append({"x": x_exact, "y": y_exact, "dx": dx, "dy": dy})
     return pts
 
 
-def train_blackbox_mlp(X: np.ndarray, y: np.ndarray, seed: int = 42) -> dict:
+def train_blackbox_mlp(x_mat: np.ndarray, y_vec: np.ndarray, seed: int = 42) -> dict:
     """Train a 2-hidden-layer MLP (6 -> 16 -> 12 -> 1, 329 params) in NumPy."""
     rng = np.random.default_rng(seed)
 
-    scaler_mean = X.mean(axis=0)
-    scaler_std = X.std(axis=0)
-    Xs = (X - scaler_mean) / scaler_std
+    scaler_mean = x_mat.mean(axis=0)
+    scaler_std = x_mat.std(axis=0)
+    x_scaled = (x_mat - scaler_mean) / scaler_std
 
-    y_mean = float(y.mean())
-    y_std = float(y.std())
-    ys = ((y - y_mean) / y_std).reshape(-1, 1)
+    y_mean = float(y_vec.mean())
+    y_std = float(y_vec.std())
+    y_scaled = ((y_vec - y_mean) / y_std).reshape(-1, 1)
 
     # Architecture: 6 -> 16 -> 12 -> 1
     # Params: (6*16 + 16) + (16*12 + 12) + (12*1 + 1) = 112 + 204 + 13 = 329
-    W1 = rng.normal(0, np.sqrt(2 / 6), size=(6, 16))
+    w1 = rng.normal(0, np.sqrt(2 / 6), size=(6, 16))
     b1 = np.zeros((1, 16))
-    W2 = rng.normal(0, np.sqrt(2 / 16), size=(16, 12))
+    w2 = rng.normal(0, np.sqrt(2 / 16), size=(16, 12))
     b2 = np.zeros((1, 12))
-    W3 = rng.normal(0, np.sqrt(1 / 12), size=(12, 1))
+    w3 = rng.normal(0, np.sqrt(1 / 12), size=(12, 1))
     b3 = np.zeros((1, 1))
 
-    params = [W1, b1, W2, b2, W3, b3]
+    params = [w1, b1, w2, b2, w3, b3]
     m_adam = [np.zeros_like(p) for p in params]
     v_adam = [np.zeros_like(p) for p in params]
 
     lr = 0.009
     beta1, beta2, eps = 0.9, 0.999, 1e-8
     l2_reg = 0.005
-    n_samples = Xs.shape[0]
+    n_samples = x_scaled.shape[0]
 
     def tanh_deriv(a: np.ndarray) -> np.ndarray:
         return 1.0 - a * a
 
     for step in range(1, 1101):
-        z1 = Xs @ params[0] + params[1]
+        z1 = x_scaled @ params[0] + params[1]
         a1 = np.tanh(z1)
         z2 = a1 @ params[2] + params[3]
         a2 = np.tanh(z2)
         y_hat = a2 @ params[4] + params[5]
 
-        err = y_hat - ys
+        err = y_hat - y_scaled
         d_yhat = (2.0 / n_samples) * err
 
-        gW3 = a2.T @ d_yhat + l2_reg * params[4]
-        gb3 = np.sum(d_yhat, axis=0, keepdims=True)
+        g_w3 = a2.T @ d_yhat + l2_reg * params[4]
+        g_b3 = np.sum(d_yhat, axis=0, keepdims=True)
         da2 = d_yhat @ params[4].T
         dz2 = da2 * tanh_deriv(a2)
 
-        gW2 = a1.T @ dz2 + l2_reg * params[2]
-        gb2 = np.sum(dz2, axis=0, keepdims=True)
+        g_w2 = a1.T @ dz2 + l2_reg * params[2]
+        g_b2 = np.sum(dz2, axis=0, keepdims=True)
         da1 = dz2 @ params[2].T
         dz1 = da1 * tanh_deriv(a1)
 
-        gW1 = Xs.T @ dz1 + l2_reg * params[0]
-        gb1 = np.sum(dz1, axis=0, keepdims=True)
+        g_w1 = x_scaled.T @ dz1 + l2_reg * params[0]
+        g_b1 = np.sum(dz1, axis=0, keepdims=True)
 
-        grads = [gW1, gb1, gW2, gb2, gW3, gb3]
+        grads = [g_w1, g_b1, g_w2, g_b2, g_w3, g_b3]
         for idx, (p, g) in enumerate(zip(params, grads)):
             m_adam[idx] = beta1 * m_adam[idx] + (1 - beta1) * g
             v_adam[idx] = beta2 * v_adam[idx] + (1 - beta2) * (g * g)
@@ -149,16 +150,16 @@ def train_blackbox_mlp(X: np.ndarray, y: np.ndarray, seed: int = 42) -> dict:
             v_hat = v_adam[idx] / (1 - beta2**step)
             p -= lr * m_hat / (np.sqrt(v_hat) + eps)
 
-    z1 = Xs @ params[0] + params[1]
+    z1 = x_scaled @ params[0] + params[1]
     a1 = np.tanh(z1)
     z2 = a1 @ params[2] + params[3]
     a2 = np.tanh(z2)
     y_pred = np.clip((a2 @ params[4] + params[5]).ravel() * y_std + y_mean, 2500.0, 275000.0)
 
-    ss_res = float(np.sum((y - y_pred) ** 2))
-    ss_tot = float(np.sum((y - y.mean()) ** 2))
+    ss_res = float(np.sum((y_vec - y_pred) ** 2))
+    ss_tot = float(np.sum((y_vec - y_vec.mean()) ** 2))
     r2 = 1.0 - ss_res / ss_tot
-    rmse = float(np.sqrt(np.mean((y - y_pred) ** 2)))
+    rmse = float(np.sqrt(np.mean((y_vec - y_pred) ** 2)))
     n_params = int(sum(p.size for p in params))
 
     return {
@@ -192,43 +193,44 @@ def main() -> None:
     else:
         df = pd.read_csv(clean_path)
 
-    # 1. Simple OLS: revenu_annuel ~ etudes
-    model_simple = smf.ols("revenu_annuel ~ etudes", data=df).fit()
+    # 1. Simple OLS: annual_income ~ education
+    model_simple = smf.ols("annual_income ~ education", data=df).fit()
     simple_pred = model_simple.predict(df)
     simple_rmse = float(np.sqrt(np.mean((df[TARGET] - simple_pred) ** 2)))
 
-    # 2. Multiple OLS (7 parametres dont 2 attributs proteges)
-    formula_full = "revenu_annuel ~ etudes + age + en_emploi + marie + femme + minorite"
+    # 2. Multiple OLS (7 parameters)
+    formula_full = "annual_income ~ education + age + employed + married + female + minority"
     model_full = smf.ols(formula_full, data=df).fit()
     full_pred = model_full.predict(df)
     full_rmse = float(np.sqrt(np.mean((df[TARGET] - full_pred) ** 2)))
 
     # 3. Real Black-Box MLP (329 params)
-    X_mat = df[FEATURES].to_numpy(dtype=float)
+    x_mat = df[FEATURES].to_numpy(dtype=float)
     y_vec = df[TARGET].to_numpy(dtype=float)
-    mlp_data = train_blackbox_mlp(X_mat, y_vec, seed=42)
+    mlp_data = train_blackbox_mlp(x_mat, y_vec, seed=42)
 
-    # 100 vrais repondants ANES 2024 (etudes >= 8 pour une plage representative, avec jitter esthetique)
-    eligible = df[df["etudes"] >= 8]
-    sample_df = eligible.sample(n=100, random_state=42)[["etudes", "revenu_annuel"]]
+    # 100 real respondents sampled with SCATTER_SAMPLE_SEED = 5 (includes 1 respondent < 10 years)
+    sample_df = df.sample(n=100, random_state=SCATTER_SAMPLE_SEED)[["education", "annual_income"]]
+    below_10_n = int((sample_df["education"] < 10).sum())
+    assert below_10_n == 1, f"Expected 1 respondent < 10 years, got {below_10_n}"
     scatter_sample = with_jitter(sample_df, seed=101)
 
-    s_ols = smf.ols("revenu_annuel ~ etudes", data=sample_df).fit()
-    s_pred = s_ols.predict(sample_df)
-    s_rmse = float(np.sqrt(np.mean((sample_df["revenu_annuel"] - s_pred) ** 2)))
+    sample_ols = smf.ols("annual_income ~ education", data=sample_df).fit()
+    sample_pred = sample_ols.predict(sample_df)
+    sample_rmse = float(np.sqrt(np.mean((sample_df["annual_income"] - sample_pred) ** 2)))
 
     feature_means = {col: round(float(df[col].mean()), 3) for col in FEATURES}
 
     feature_meta = [
         {
-            "key": "etudes",
+            "key": "education",
             "label": "Annees d'etudes equivalentes",
             "short_label": "Etudes",
             "unit": "ans",
             "min": 6,
             "max": 20,
             "step": 1,
-            "mean": feature_means["etudes"],
+            "mean": feature_means["education"],
             "type": "slider",
             "protected": False,
             "hint": "12 = Bac / High school, 16 = Licence (Bachelor), 18 = Master, 20 = Doctorat.",
@@ -247,114 +249,114 @@ def main() -> None:
             "hint": "Age du repondant (18 a 80 ans). L'effet reel n'est pas lineaire entre carriere et retraite.",
         },
         {
-            "key": "en_emploi",
+            "key": "employed",
             "label": "Statut d'activite",
             "short_label": "En emploi",
             "unit": "0=Non, 1=En emploi",
             "min": 0,
             "max": 1,
             "step": 1,
-            "mean": feature_means["en_emploi"],
+            "mean": feature_means["employed"],
             "type": "toggle",
             "protected": False,
             "options": ["Hors emploi (0)", "En emploi (1)"],
             "hint": "En emploi (20h+/semaine) ou retraite / hors emploi / etudiant.",
         },
         {
-            "key": "marie",
+            "key": "married",
             "label": "Situation maritale",
             "short_label": "Marie·e",
             "unit": "0=Non, 1=Marie·e",
             "min": 0,
             "max": 1,
             "step": 1,
-            "mean": feature_means["marie"],
+            "mean": feature_means["married"],
             "type": "toggle",
             "protected": False,
             "options": ["Non marie·e (0)", "Marie·e (1)"],
             "hint": "Marie·e (foyer souvent a deux revenus) vs celibataire / divorce·e / veuf·ve.",
         },
         {
-            "key": "femme",
-            "label": "Sexe (attribut protege)",
-            "short_label": "Femme (biais)",
+            "key": "female",
+            "label": "Sexe",
+            "short_label": "Femme",
             "unit": "0=Homme, 1=Femme",
             "min": 0,
             "max": 1,
             "step": 1,
-            "mean": feature_means["femme"],
+            "mean": feature_means["female"],
             "type": "toggle",
             "protected": True,
             "options": ["Homme (0)", "Femme (1)"],
-            "hint": "Attribut protege : ecart historique constate dans ANES 2024, illicite dans un scoring equitable.",
+            "hint": "Effet statistiquement significatif (p < 0,001) a profil comparable.",
         },
         {
-            "key": "minorite",
-            "label": "Origine / race (attribut protege)",
-            "short_label": "Minorite (biais)",
+            "key": "minority",
+            "label": "Origine",
+            "short_label": "Minorite",
             "unit": "0=Blanc non-hisp., 1=Minorite",
             "min": 0,
             "max": 1,
             "step": 1,
-            "mean": feature_means["minorite"],
+            "mean": feature_means["minority"],
             "type": "toggle",
             "protected": True,
             "options": ["Blanc non-hisp. (0)", "Minorite racisee (1)"],
-            "hint": "Attribut protege (27,5 % de l'echantillon ANES 2024) : ecart significatif p < 0,001.",
+            "hint": "Effet statistiquement significatif (p < 0,001) a profil comparable.",
         },
     ]
 
     presets = [
         {
-            "id": "typique",
+            "id": "typical",
             "label": "Profil typique (median)",
             "description": "14 ans d'etudes, 52 ans, en emploi, marie, homme blanc.",
             "values": {
-                "etudes": 14,
+                "education": 14,
                 "age": 52,
-                "en_emploi": 1,
-                "marie": 1,
-                "femme": 0,
-                "minorite": 0,
+                "employed": 1,
+                "married": 1,
+                "female": 0,
+                "minority": 0,
             },
         },
         {
-            "id": "jeune_diplomee",
+            "id": "young_graduate",
             "label": "Jeune diplomee active",
             "description": "16 ans d'etudes, 29 ans, en emploi, non mariee, femme.",
             "values": {
-                "etudes": 16,
+                "education": 16,
                 "age": 29,
-                "en_emploi": 1,
-                "marie": 0,
-                "femme": 1,
-                "minorite": 0,
+                "employed": 1,
+                "married": 0,
+                "female": 1,
+                "minority": 0,
             },
         },
         {
-            "id": "couple_master",
+            "id": "career_couple",
             "label": "Couple diplome en carriere",
             "description": "18 ans d'etudes, 46 ans, en emploi, marie, homme blanc.",
             "values": {
-                "etudes": 18,
+                "education": 18,
                 "age": 46,
-                "en_emploi": 1,
-                "marie": 1,
-                "femme": 0,
-                "minorite": 0,
+                "employed": 1,
+                "married": 1,
+                "female": 0,
+                "minority": 0,
             },
         },
         {
-            "id": "retraitee_minorite",
-            "label": "Retraitee seule (double protege)",
+            "id": "retired_single",
+            "label": "Retraitee seule",
             "description": "12 ans d'etudes, 72 ans, hors emploi, femme minorite.",
             "values": {
-                "etudes": 12,
+                "education": 12,
                 "age": 72,
-                "en_emploi": 0,
-                "marie": 0,
-                "femme": 1,
-                "minorite": 1,
+                "employed": 0,
+                "married": 0,
+                "female": 1,
+                "minority": 1,
             },
         },
     ]
@@ -363,6 +365,8 @@ def main() -> None:
         "metadata": {
             "n": int(len(df)),
             "scatter_n": int(len(scatter_sample)),
+            "scatter_seed": SCATTER_SAMPLE_SEED,
+            "scatter_below_10_n": below_10_n,
             "dataset": "ANES 2024 Time Series Study (USA)",
             "source_url": ANES_URL,
             "target": TARGET,
@@ -374,17 +378,17 @@ def main() -> None:
         },
         "feature_meta": feature_meta,
         "simple_ols": {
-            "formula": "revenu_annuel ~ etudes",
+            "formula": "annual_income ~ education",
             "n_params": 2,
             "intercept": round(float(model_simple.params["Intercept"]), 1),
-            "slope": round(float(model_simple.params["etudes"]), 1),
+            "slope": round(float(model_simple.params["education"]), 1),
             "r2": round(float(model_simple.rsquared), 4),
             "rmse": round(simple_rmse, 0),
-            "pvalue_slope": float(model_simple.pvalues["etudes"]),
-            "sample100_intercept": round(float(s_ols.params["Intercept"]), 1),
-            "sample100_slope": round(float(s_ols.params["etudes"]), 1),
-            "sample100_r2": round(float(s_ols.rsquared), 4),
-            "sample100_rmse": round(s_rmse, 0),
+            "pvalue_slope": float(model_simple.pvalues["education"]),
+            "sample100_intercept": round(float(sample_ols.params["Intercept"]), 1),
+            "sample100_slope": round(float(sample_ols.params["education"]), 1),
+            "sample100_r2": round(float(sample_ols.rsquared), 4),
+            "sample100_rmse": round(sample_rmse, 0),
         },
         "full_ols": {
             "formula": formula_full,
@@ -418,13 +422,15 @@ def main() -> None:
         f"N = {len(df)}, Target mean = {payload['metadata']['target_mean']:.0f} $/an, "
         f"median = {payload['metadata']['target_median']:.0f} $/an, std = {payload['metadata']['target_std']:.0f} $/an"
     )
-    print("Simple OLS (revenu_annuel ~ etudes, 2 params):")
+    print("Simple OLS (annual_income ~ education, 2 params):")
     print(
         f"  Full N=4734 : Intercept = {payload['simple_ols']['intercept']:.1f}, slope = {payload['simple_ols']['slope']:+.1f} $/an, "
         f"R2 = {payload['simple_ols']['r2']:.4f}, RMSE = {payload['simple_ols']['rmse']:.0f} $/an"
     )
     print(
-        f"  Sample 100  : Intercept = {payload['simple_ols']['sample100_intercept']:.1f}, slope = {payload['simple_ols']['sample100_slope']:+.1f} $/an, "
+        f"  Sample 100 (seed={SCATTER_SAMPLE_SEED}, <10y={below_10_n}): "
+        f"Intercept = {payload['simple_ols']['sample100_intercept']:.1f}, "
+        f"slope = {payload['simple_ols']['sample100_slope']:+.1f} $/an, "
         f"R2 = {payload['simple_ols']['sample100_r2']:.4f}, RMSE = {payload['simple_ols']['sample100_rmse']:.0f} $/an"
     )
     print("Full OLS (7 params):")

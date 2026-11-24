@@ -8,26 +8,26 @@
   var TAB1_DEFAULT_B1 = 6000;
 
   var FRENCH_PRESET_COPY = {
-    typique: {
+    typical: {
       label: "Profil typique (médian)",
       description: "14 ans d'études, 52 ans, en emploi, marié, homme blanc."
     },
-    jeune_diplomee: {
+    young_graduate: {
       label: "Jeune diplômée active",
       description: "16 ans d'études, 29 ans, en emploi, non mariée, femme."
     },
-    couple_master: {
+    career_couple: {
       label: "Couple diplômé en carrière",
       description: "18 ans d'études, 46 ans, en emploi, marié, homme blanc."
     },
-    retraitee_minorite: {
+    retired_single: {
       label: "Retraitée seule",
       description: "12 ans d'études, 72 ans, hors emploi, femme minorité."
     }
   };
 
   var FRENCH_FEATURE_COPY = {
-    etudes: {
+    education: {
       label: "Années d'études",
       short: "Études",
       unit: "ans",
@@ -39,28 +39,28 @@
       unit: "ans",
       hint: "Âge du répondant (18 à 80 ans). L'effet réel varie entre début de carrière, pic et retraite."
     },
-    en_emploi: {
+    employed: {
       label: "Statut d'activité",
       short: "En emploi",
       unit: "0 = Non, 1 = En emploi",
       options: ["Hors emploi (0)", "En emploi (1)"],
       hint: "En emploi (20h+/semaine) ou retraité / hors emploi / étudiant."
     },
-    marie: {
+    married: {
       label: "Situation maritale",
       short: "Marié·e",
       unit: "0 = Non, 1 = Marié·e",
       options: ["Non marié·e (0)", "Marié·e (1)"],
       hint: "Marié·e (foyer souvent à deux revenus) ou célibataire / divorcé·e / veuf·ve."
     },
-    femme: {
+    female: {
       label: "Sexe",
       short: "Femme",
       unit: "0 = Homme, 1 = Femme",
       options: ["Homme (0)", "Femme (1)"],
       hint: "Effet statistiquement significatif (p < 0,001) à profil comparable."
     },
-    minorite: {
+    minority: {
       label: "Origine",
       short: "Minorité",
       unit: "0 = Blanc non-hisp., 1 = Minorité",
@@ -78,14 +78,14 @@
     showResiduals: false,
     olsAnimId: null,
     profile: {
-      etudes: 14,
+      education: 14,
       age: 52,
-      en_emploi: 1,
-      marie: 1,
-      femme: 0,
-      minorite: 0
+      employed: 1,
+      married: 1,
+      female: 0,
+      minority: 0
     },
-    lastChangedKey: "etudes",
+    lastChangedKey: "education",
     profileA: null,
     tab3Mode: "glass",
     probeOpen: false,
@@ -253,7 +253,7 @@
   }
 
   /* =========================================================
-     ONGLET 2 : REGRESSION SIMPLE (revenu_annuel ~ etudes)
+     ONGLET 2 : REGRESSION SIMPLE (annual_income ~ education)
      ========================================================= */
   var scatterGeom = {
     w: 720,
@@ -531,7 +531,7 @@
       "font-size": 12.5,
       "font-weight": 600
     });
-    xTitle.textContent = "Années d'études (etudes, en ans)";
+    xTitle.textContent = "Années d'études (education, en ans)";
     gridGroup.appendChild(xTitle);
 
     var yTitle = svgEl("text", {
@@ -604,7 +604,7 @@
     el.sliderB1.value = String(clamp(b1, -5000, 25000));
 
     var signStr = b1 >= 0 ? "+ " + fmt(b1, 0) : "- " + fmt(Math.abs(b1), 0);
-    el.tab1EqLive.textContent = "ŷ = " + fmt(b0, 0) + " " + signStr + " × etudes";
+    el.tab1EqLive.textContent = "ŷ = " + fmt(b0, 0) + " " + signStr + " × education";
 
     var x1 = scatterGeom.xMin;
     var x2 = scatterGeom.xMax;
@@ -696,7 +696,7 @@
           " " +
           (activeOls.b1 >= 0 ? "+ " : "- ") +
           fmt(Math.abs(activeOls.b1), 0) +
-          " × etudes. Chaque point ajouté déplace la règle linéaire !";
+          " × education. Chaque point ajouté déplace la règle linéaire !";
       }
     } else if (excess < 500) {
       el.tab1MeterStatus.textContent =
@@ -756,7 +756,7 @@
   }
 
   function formatLeverValue(meta, val) {
-    if (meta.key === "etudes") {
+    if (meta.key === "education") {
       if (val === 12) return "12 ans (Bac)";
       if (val === 16) return "16 ans (Licence)";
       if (val === 18) return "18 ans (Master)";
@@ -766,35 +766,35 @@
     if (meta.key === "age") {
       return val + " ans";
     }
-    if (meta.key === "en_emploi") {
+    if (meta.key === "employed") {
       return val === 1 ? "En emploi (1)" : "Hors emploi (0)";
     }
-    if (meta.key === "marie") {
+    if (meta.key === "married") {
       return val === 1 ? "Marié·e (1)" : "Non (0)";
     }
-    if (meta.key === "femme") {
+    if (meta.key === "female") {
       return val === 1 ? "Femme (1)" : "Homme (0)";
     }
-    if (meta.key === "minorite") {
+    if (meta.key === "minority") {
       return val === 1 ? "Minorité (1)" : "Blanc non-hisp. (0)";
     }
     return String(val);
   }
 
   function formatNodeShortValue(meta, val) {
-    if (meta.key === "etudes" || meta.key === "age") {
+    if (meta.key === "education" || meta.key === "age") {
       return val + " ans";
     }
-    if (meta.key === "en_emploi") {
+    if (meta.key === "employed") {
       return val === 1 ? "Oui" : "Non";
     }
-    if (meta.key === "marie") {
+    if (meta.key === "married") {
       return val === 1 ? "Oui" : "Non";
     }
-    if (meta.key === "femme") {
+    if (meta.key === "female") {
       return val === 1 ? "Femme" : "Homme";
     }
-    if (meta.key === "minorite") {
+    if (meta.key === "minority") {
       return val === 1 ? "Oui" : "Non";
     }
     return String(val);
@@ -1017,12 +1017,12 @@
 
   function profileToVec(profileObj) {
     return [
-      profileObj.etudes,
+      profileObj.education,
       profileObj.age,
-      profileObj.en_emploi,
-      profileObj.marie,
-      profileObj.femme,
-      profileObj.minorite
+      profileObj.employed,
+      profileObj.married,
+      profileObj.female,
+      profileObj.minority
     ];
   }
 
@@ -1798,45 +1798,45 @@
       el.probeBars.appendChild(row);
     });
 
-    var etudesProbe = probe[0];
+    var educationProbe = probe[0];
     var ageProbe = probe[1];
-    var enEmploiProbe = probe[2];
-    var marieProbe = probe[3];
-    var femmeProbe = probe[4];
-    var minoriteProbe = probe[5];
+    var employedProbe = probe[2];
+    var marriedProbe = probe[3];
+    var femaleProbe = probe[4];
+    var minorityProbe = probe[5];
     var olsParams = state.data.full_ols.params;
 
     el.probeCallout.innerHTML =
       "<strong>Comparaison clé (XAI locale vs règle globale) :</strong> " +
       "dans la boîte de verre (OLS), chaque critère est figé pour tout le monde : <strong>" +
-      fmtSignedIncome(olsParams.etudes, 0) +
+      fmtSignedIncome(olsParams.education, 0) +
       "</strong> par année d'études, <strong>" +
       fmtSignedIncome(olsParams.age, 0) +
       "</strong> par année d'âge et <strong>" +
-      fmtSignedIncome(olsParams.marie, 0) +
+      fmtSignedIncome(olsParams.married, 0) +
       "</strong> pour Marié·e. Pour <strong>ce profil précis</strong> (âge " +
       fmt(state.profile.age, 0) +
       " ans), la sonde locale sur le réseau de neurones mesure <strong>" +
-      fmtSignedIncome(etudesProbe.slope, 0) +
+      fmtSignedIncome(educationProbe.slope, 0) +
       "</strong> par année d'études, <strong>" +
       fmtSignedIncome(ageProbe.slope, 0) +
       "</strong> par année d'âge, <strong>" +
-      fmtSignedIncome(enEmploiProbe.slope, 0) +
+      fmtSignedIncome(employedProbe.slope, 0) +
       "</strong> pour En emploi et <strong>" +
-      fmtSignedIncome(marieProbe.slope, 0) +
+      fmtSignedIncome(marriedProbe.slope, 0) +
       "</strong> pour Marié·e. Contrairement à la pente fixe de l'OLS (-227 $ / an), le MLP capture la courbe réelle de l'âge : " +
       "pente positive ou en plateau en début et milieu de carrière (ex. vers 29-46 ans chez les actifs), puis pente négative à l'approche de la retraite (ex. vers 60-72 ans en activité) !";
 
     el.probeProxyCallout.innerHTML =
       "<strong>Biais et risque de variables proxy :</strong> " +
       "ici, la sonde locale mesure <strong>" +
-      fmtSignedIncome(femmeProbe.slope, 0) +
+      fmtSignedIncome(femaleProbe.slope, 0) +
       "</strong> sur <strong>Femme</strong> (contre " +
-      fmtSignedIncome(olsParams.femme, 0) +
+      fmtSignedIncome(olsParams.female, 0) +
       " en OLS) et <strong>" +
-      fmtSignedIncome(minoriteProbe.slope, 0) +
+      fmtSignedIncome(minorityProbe.slope, 0) +
       "</strong> sur <strong>Minorité</strong> (contre " +
-      fmtSignedIncome(olsParams.minorite, 0) +
+      fmtSignedIncome(olsParams.minority, 0) +
       " en OLS). Même si l'on retire ces deux critères (sexe et origine) d'un algorithme RH ou bancaire, " +
       "une boîte noire peut les reconstruire via des variables corrélées " +
       "(statut d'activité, situation maritale, niveau d'études, âge). " +
