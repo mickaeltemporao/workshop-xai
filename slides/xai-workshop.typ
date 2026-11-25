@@ -772,64 +772,11 @@
 // ============================================================================
 
 #title-slide[
-  03 · Atelier pratique : Construire un profil
+  03 · Atelier pratique
 ]
 
 // ============================================================================
-// Slide 15 : Votre mission (15-20 min)
-// ============================================================================
-
-#wslide(title: "Votre mission (15 à 20 min)")[
-  #top-cols(columns: (1fr, 1fr, 1fr), gutter: 1.8em)[
-    #line(length: 100%, stroke: 1.5pt + muted)
-    #v(8pt)
-    #text(size: 22pt, weight: "bold", fill: muted)[01]
-    #v(6pt)
-    #text(size: 14.5pt, weight: "bold", fill: ink)[Tester le clic & les résidus]
-    #v(8pt)
-    #set text(size: 11.2pt)
-    - Sur l'#strong[Onglet 2] (`Une droite`, `100` points réels), cochez #emph[Afficher les erreurs (résidus)], puis ajoutez un point au clic.
-    - Testez `female` et `minority` sur les *Onglets 3 et 4* (`7` vs `329` paramètres).
-  ][
-    #line(length: 100%, stroke: 1.5pt + ink)
-    #v(8pt)
-    #text(size: 22pt, weight: "bold", fill: ink)[02]
-    #v(6pt)
-    #text(size: 14.5pt, weight: "bold", fill: ink)[Exécuter `smf.ols` sur Colab]
-    #v(8pt)
-    #set text(size: 11.2pt)
-    - Depuis l'#strong[Onglet 5] (`Hack-time`), ouvrez le #link("https://colab.research.google.com/github/mickaeltemporao/workshop-xai/blob/main/notebooks/atelier-xai-citoyen.ipynb")[#text(weight: "bold", fill: accent-red)[notebook Google Colab]] (dépôt #link("https://github.com/mickaeltemporao/workshop-xai")[GitHub]).
-    - Chargez les données d'enquête et retrouvez `R² = 0.31`, `female` (`-8 007 $`) et `minority` (`-10 328 $`).
-  ][
-    #line(length: 100%, stroke: 1.5pt + accent-red)
-    #v(8pt)
-    #text(size: 22pt, weight: "bold", fill: accent-red)[03]
-    #v(6pt)
-    #text(size: 14.5pt, weight: "bold", fill: ink)[Comparer `7` vs `329` paramètres]
-    #v(8pt)
-    #set text(size: 11.2pt)
-    - Basculez `female` ou `minority` puis variez une variable $X_i$ à la fois.
-    - Confrontez boîte de verre (`7` params) et boîte noire (`329` params) sur des profils contrastés.
-  ]
-
-  #v(14pt)
-
-  #callout-strip(
-    "Question fil rouge",
-    [
-      Comment évolue l'effet de l'`age` à `30` ans vs `70` ans dans la boîte noire (`329` paramètres) face au `-227 $ / an` fixe de la régression ?
-    ],
-    accent: accent-red,
-  )
-
-  #v(10pt)
-  #align(left, text(size: 9pt, fill: muted)[
-    Application : #link("https://mickaeltemporao.github.io/workshop-xai/")[mickaeltemporao.github.io/workshop-xai] | Licence CC BY-NC-SA 4.0 | Note IA : supports et code conçus avec l'assistance d'outils d'IA générative, relus et validés par l'intervenant.
-  ])
-]
-
-// ============================================================================
-// Slide 16 : Cloture
+// Slide 15 : Cloture
 // ============================================================================
 
 #focus-slide[
@@ -838,7 +785,22 @@
   Merci !
   #v(0.6cm)
   #text(size: 18pt, weight: "regular", fill: white)[
-    #link("https://mickaeltemporao.github.io/workshop-xai/")[#text(fill: white)[mickaeltemporao.github.io/workshop-xai]] \
-    #link("https://github.com/mickaeltemporao/workshop-xai")[#text(fill: white)[github.com/mickaeltemporao/workshop-xai]]
+    #link("https://mickaeltemporao.github.io/workshop-xai/")[#text(fill: white)[mickaeltemporao.github.io/workshop-xai]]
   ]
 ]
+
+#pagebreak()
+
+// ============================================================================
+// Slide 16 : Page de titre finale
+// ============================================================================
+
+#front-slide(
+  title: "Workshop IA Explicable (XAI)",
+  subtitle: [De la régression aux grands modèles de langage],
+  authors: "Mickael Temporão",
+  info: [
+    Sciences Po Bordeaux | Centre Émile Durkheim | 2026 \
+    #link("https://mickaeltemporao.github.io/workshop-xai/")[mickaeltemporao.github.io/workshop-xai]
+  ],
+)
